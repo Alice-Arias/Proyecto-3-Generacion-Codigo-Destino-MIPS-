@@ -281,7 +281,7 @@ public class Main {
 
         /* Las preguntas van despues del resultado: asi el veredicto se ve primero
            y el tiempo no cuenta lo que se tarda la persona en responder */
-        ofrecerCodigoIntermedio(codigoIntermedio);
+        /*ofrecerCodigoIntermedio(codigoIntermedio);*/
 
         ofrecerTablaSimbolos(tabla, reporte);
 
@@ -321,8 +321,47 @@ public class Main {
         mostrarDato("Archivo", archivoAsm.getName());
         mostrarDato("Carpeta", carpetaCorta(archivoAsm));
         mostrarEstado(true, "Código MIPS generado.");
+        
+        mostrarCodigoMIPS(codigoMips);
     }
+        /*
+     * Descripcion: Muestra el codigo MIPS con numeros de linea y colores.
+     * Entrada: Codigo MIPS.
+     * Salida: El codigo en consola.
+     * Restricciones: Comentarios en gris, etiquetas en amarillo, secciones en cian.
+     */
+    private static void mostrarCodigoMIPS(String codigo) {
 
+        System.out.println();
+        System.out.println("  " + pintar(CIAN, "secciones") + pintar(GRIS, "  ·  ")
+                + pintar(AMARILLO, "etiquetas") + pintar(GRIS, "  ·  ")
+                + pintar(GRIS, "comentarios (línea del código intermedio)"));
+        System.out.println();
+
+        String[] lineas = codigo.split("\n");
+        int ancho = String.valueOf(lineas.length).length();
+
+        for (int i = 0; i < lineas.length; i++) {
+
+            String linea = lineas[i];
+            String limpia = linea.trim();
+            String texto;
+
+            if (limpia.startsWith("#")) {
+                texto = pintar(GRIS, linea);
+            } else if (limpia.startsWith(".")) {
+                texto = pintar(CIAN, linea);
+            } else if (limpia.endsWith(":")) {
+                texto = pintar(AMARILLO, linea);
+            } else {
+                texto = linea;
+            }
+
+            System.out.println(pintar(GRIS, String.format("  %" + ancho + "d │", i + 1)) + " " + texto);
+        }
+
+        System.out.println();
+    }
     /* ============================================================
        FASES
        ============================================================ */
@@ -441,7 +480,8 @@ public class Main {
         mostrarDato("Carpeta", carpetaCorta(archivoTac));
 
         mostrarEstado(true, "Código intermedio generado.");
-
+        
+        mostrarCodigoIntermedio(codigo);
         return codigo;
     }
 
