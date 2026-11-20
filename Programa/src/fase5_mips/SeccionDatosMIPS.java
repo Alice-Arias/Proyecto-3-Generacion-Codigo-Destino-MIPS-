@@ -69,13 +69,27 @@ public class SeccionDatosMIPS {
             return tipoPorNombre.get(valor);
         }
 
+        String tipoTemporal = tipoDeTemporal(valor);
+
+        return tipoTemporal != null ? tipoTemporal : "int";
+    }
+
+    /*
+     * Descripcion: Da el tipo de un temporal segun su nombre.
+     * Entrada: Nombre como float6 o int5.
+     * Salida: El tipo (float, int...) o null si no es un temporal.
+     * Restricciones: Los temporales siempre son un tipo seguido de un numero.
+     * Objetivo: Saber el tipo de un temporal sin buscarlo en ningun lado.
+     */
+    public static String tipoDeTemporal(String nombre) {
+
         for (String tipo : TIPOS_DE_TEMPORAL) {
-            if (valor.matches(tipo + "\\d+")) {
+            if (nombre.matches(tipo + "\\d+")) {
                 return tipo;
             }
         }
 
-        return "int";
+        return null;
     }
 
     /*
@@ -173,7 +187,7 @@ public class SeccionDatosMIPS {
      * Objetivo: Separar los temporales de las variables del programa.
      */
     private boolean esTemporal(String nombre) {
-        return nombre.matches("(int|float|string|char|bool)\\d+");
+        return tipoDeTemporal(nombre) != null;
     }
 
     /*
