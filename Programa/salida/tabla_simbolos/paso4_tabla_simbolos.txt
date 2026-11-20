@@ -1,0 +1,23 @@
+  Árbol de ámbitos
+
+  global  (1 símbolo)
+  └── procedimiento principal  (5 símbolos)
+      ├── if  (0 símbolos)
+      └── if  (0 símbolos)
+
+  Categorías: variable  arreglo  parámetro  función  procedimiento
+  Dirección:   global+n = zona estática                 ----   pila+n = registro de activación
+  Acceso:      público = declarado en el ámbito global ------- privado = dentro de una función o bloque
+
+  ┌─────┬────────────────────┬───────────────┬─────────┬──────────────────────────┬───────┬────────────┬─────────────┬────────────────────────┬──────────┬───────┬─────┐
+  │ Nº  │ NOMBRE             │ CATEGORÍA     │ TIPO    │ ÁMBITO                   │ BYTES │ DIMENSIÓN  │ DIRECCIÓN   │ VALOR INICIAL          │ ACCESO   │ LÍNEA │ COL │
+  ├─────┼────────────────────┼───────────────┼─────────┼──────────────────────────┼───────┼────────────┼─────────────┼────────────────────────┼──────────┼───────┼─────┤
+  │ 1   │ principal          │ procedimiento │ void    │ global                   │ —     │ —          │ código      │ —                      │ público  │ 1     │ 6   │
+  ├─────┼────────────────────┼───────────────┼─────────┼──────────────────────────┼───────┼────────────┼─────────────┼────────────────────────┼──────────┼───────┼─────┤
+  │ 2   │ x                  │ variable      │ float   │ procedimiento principal  │ 4     │ —          │ pila+0      │ 7.5                    │ privado  │ 2     │ 15  │
+  │ 3   │ y                  │ variable      │ float   │ procedimiento principal  │ 4     │ —          │ pila+4      │ 2.0                    │ privado  │ 3     │ 15  │
+  │ 4   │ z                  │ variable      │ float   │ procedimiento principal  │ 4     │ —          │ pila+8      │ —                      │ privado  │ 4     │ 15  │
+  │ 5   │ saludo             │ variable      │ string  │ procedimiento principal  │ 4     │ —          │ pila+12     │ "Hola MIPS"            │ privado  │ 11    │ 16  │
+  │ 6   │ letra              │ variable      │ char    │ procedimiento principal  │ 1     │ —          │ pila+16     │ 'A'                    │ privado  │ 17    │ 14  │
+  └─────┴────────────────────┴───────────────┴─────────┴──────────────────────────┴───────┴────────────┴─────────────┴────────────────────────┴──────────┴───────┴─────┘
+

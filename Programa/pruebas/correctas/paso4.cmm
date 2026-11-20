@@ -1,0 +1,21 @@
+void principal є: :э ¿:
+    val float x Ͱ 7.5 »
+    val float y Ͱ 2.0 »
+    val float z »
+    z Ͱ x + y »
+    write є: z :э »
+    z Ͱ x * y »
+    write є: z :э »
+    z Ͱ x / y »
+    write є: z :э »
+    val string saludo Ͱ "Hola MIPS" »
+    write є: saludo :э »
+    write є: "fin de textos" :э »
+    if є: ʃ:x:ʅ > ʃ:y:ʅ :э ¿:
+        write є: "x es mayor" :э »
+    :?
+    val char letra Ͱ 'A' »
+    if є: ʃ:letra:ʅ == ʃ:'A':ʅ :э ¿:
+        write є: "la letra es A" :э »
+    :?
+:?

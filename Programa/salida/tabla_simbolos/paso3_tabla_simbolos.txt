@@ -1,0 +1,36 @@
+  Árbol de ámbitos
+
+  global  (1 símbolo)
+  └── procedimiento principal  (4 símbolos)
+      ├── if  (0 símbolos)
+      ├── else  (0 símbolos)
+      ├── if  (0 símbolos)
+      ├── else  (0 símbolos)
+      ├── if  (0 símbolos)
+      ├── elif  (0 símbolos)
+      ├── else  (0 símbolos)
+      ├── if  (0 símbolos)
+      ├── if  (0 símbolos)
+      ├── while  (0 símbolos)
+      └── for  (1 símbolo)
+          └── cuerpo for  (0 símbolos)
+              └── if  (0 símbolos)
+
+  Categorías: variable  arreglo  parámetro  función  procedimiento
+  Dirección:   global+n = zona estática                 ----   pila+n = registro de activación
+  Acceso:      público = declarado en el ámbito global ------- privado = dentro de una función o bloque
+
+  ┌─────┬────────────────────┬───────────────┬─────────┬──────────────────────────┬───────┬────────────┬─────────────┬────────────────────────┬──────────┬───────┬─────┐
+  │ Nº  │ NOMBRE             │ CATEGORÍA     │ TIPO    │ ÁMBITO                   │ BYTES │ DIMENSIÓN  │ DIRECCIÓN   │ VALOR INICIAL          │ ACCESO   │ LÍNEA │ COL │
+  ├─────┼────────────────────┼───────────────┼─────────┼──────────────────────────┼───────┼────────────┼─────────────┼────────────────────────┼──────────┼───────┼─────┤
+  │ 1   │ principal          │ procedimiento │ void    │ global                   │ —     │ —          │ código      │ —                      │ público  │ 1     │ 6   │
+  ├─────┼────────────────────┼───────────────┼─────────┼──────────────────────────┼───────┼────────────┼─────────────┼────────────────────────┼──────────┼───────┼─────┤
+  │ 2   │ a                  │ variable      │ int     │ procedimiento principal  │ 4     │ —          │ pila+0      │ 10                     │ privado  │ 2     │ 13  │
+  │ 3   │ b                  │ variable      │ int     │ procedimiento principal  │ 4     │ —          │ pila+4      │ 3                      │ privado  │ 3     │ 13  │
+  │ 4   │ activo             │ variable      │ bool    │ procedimiento principal  │ 1     │ —          │ pila+8      │ true                   │ privado  │ 4     │ 14  │
+  │ 5   │ c                  │ variable      │ int     │ procedimiento principal  │ 4     │ —          │ pila+9      │ 3                      │ privado  │ 44    │ 13  │
+  ├─────┼────────────────────┼───────────────┼─────────┼──────────────────────────┼───────┼────────────┼─────────────┼────────────────────────┼──────────┼───────┼─────┤
+  │ 6   │ i                  │ variable      │ int     │ procedimiento principal  │ 4     │ —          │ pila+13     │ 0                      │ privado  │ 51    │ 20  │
+  │     │                    │               │         │ › for                    │       │            │             │                        │          │       │     │
+  └─────┴────────────────────┴───────────────┴─────────┴──────────────────────────┴───────┴────────────┴─────────────┴────────────────────────┴──────────┴───────┴─────┘
+
