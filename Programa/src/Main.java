@@ -28,8 +28,8 @@ import java_cup.runtime.Symbol;
 
 /*
  * Descripcion:
- * Programa principal del compilador. Ejecuta las cuatro fases (lexica, sintactica,
- * semantica y codigo intermedio) y muestra los resultados.
+ * Programa principal del compilador. Ejecuta las cinco fases (lexica, sintactica,
+ * semantica, codigo intermedio y codigo MIPS) y muestra los resultados.
  *
  * Entrada:
  * El archivo .cmm a analizar y, si se quiere, el archivo donde guardar los tokens.
@@ -274,32 +274,36 @@ public class Main {
         boolean archivoCorrecto = erroresTotales == 0 && !analizador.interrumpido;
 
         String codigoIntermedio = faseCodigoIntermedio(analizador, archivoFuente, archivoCorrecto);
-        
-        faseCodigoMIPS(codigoIntermedio, archivoFuente);
+
+        String codigoMips = faseCodigoMIPS(codigoIntermedio, archivoFuente);
 
         mostrarResultadoFinal(lexico, analizador, tabla, erroresTotales, archivoCorrecto, inicio);
 
         /* Las preguntas van despues del resultado: asi el veredicto se ve primero
-           y el tiempo no cuenta lo que se tarda la persona en responder */
-        /*ofrecerCodigoIntermedio(codigoIntermedio);*/
+           y el tiempo no cuenta lo que se tarda la persona en responder.
+           Orden: codigo intermedio, codigo MIPS y tabla de simbolos */
+        ofrecerCodigoIntermedio(codigoIntermedio);
+
+        ofrecerCodigoMIPS(codigoMips);
 
         ofrecerTablaSimbolos(tabla, reporte);
 
         System.out.println();
     }
-        /*
+
+    /*
      * Descripcion: Fase 5: traduce el codigo intermedio a MIPS.
      * Entrada: Codigo intermedio (null si hubo errores) y archivo fuente.
-     * Salida: Archivo .asm en salida/mips con el mismo nombre del fuente.
+     * Salida: El codigo MIPS (guardado en salida/mips/<nombre>.asm), o null si no se genero.
      * Restricciones: Si el archivo tiene errores, no se genera MIPS.
      */
-    private static void faseCodigoMIPS(String codigoIntermedio, File fuente) throws Exception {
+    private static String faseCodigoMIPS(String codigoIntermedio, File fuente) throws Exception {
 
         mostrarSeccion("FASE 5 · CÓDIGO MIPS");
 
         if (codigoIntermedio == null) {
             mostrarEstado(false, "No se generó código MIPS: el archivo tiene errores.");
-            return;
+            return null;
         }
 
         String codigoMips = new GeneradorMIPS().traducir(codigoIntermedio);
@@ -321,47 +325,130 @@ public class Main {
         mostrarDato("Archivo", archivoAsm.getName());
         mostrarDato("Carpeta", carpetaCorta(archivoAsm));
         mostrarEstado(true, "Código MIPS generado.");
-        
-        mostrarCodigoMIPS(codigoMips);
+
+        return codigoMips;
     }
-        /*
+
+    /*
+     * Descripcion: Pregunta si se quiere ver el codigo MIPS.
+     * Entrada: El codigo MIPS, o null si no se genero.
+     * Salida: El codigo en consola, si se pide.
+     * Restricciones: Si no hay codigo, no pregunta.
+     */
+    private static void ofrecerCodigoMIPS(String codigo) {
+
+        if (codigo == null) {
+            return;
+        }
+
+        System.out.println();
+
+        if (preguntarSiNo("¿Desea ver el código MIPS? (s/n): ")) {
+            mostrarSeccion("CÓDIGO MIPS");
+            mostrarCodigoMIPS(codigo);
+        }
+    }
+
+    /* ============================================================
+       FASE 5: CODIGO MIPS EN CONSOLA
+       Colores:
+         cian     : secciones y directivas (.data, .text, .word, .float, .asciiz)
+         amarillo : etiquetas (donde se definen y a donde se salta)
+         negrita  : nombre de la instruccion (lw, add, j...)
+         verde    : syscall (imprimir, leer o terminar)
+         gris     : comentarios y numeros de linea
+       ============================================================ */
+
+    /* Instrucciones que saltan a una etiqueta */
+    private static final Set<String> MIPS_SALTOS = new LinkedHashSet<>(java.util.Arrays.asList(
+            "j", "jal", "b", "beq", "bne", "bnez", "beqz", "blez", "bgtz", "bltz", "bgez",
+            "bc1t", "bc1f"));
+
+    /*
      * Descripcion: Muestra el codigo MIPS con numeros de linea y colores.
      * Entrada: Codigo MIPS.
      * Salida: El codigo en consola.
-     * Restricciones: Comentarios en gris, etiquetas en amarillo, secciones en cian.
+     * Restricciones: Usa pocos colores para que se lea facil.
      */
     private static void mostrarCodigoMIPS(String codigo) {
-
-        System.out.println();
-        System.out.println("  " + pintar(CIAN, "secciones") + pintar(GRIS, "  ·  ")
-                + pintar(AMARILLO, "etiquetas") + pintar(GRIS, "  ·  ")
-                + pintar(GRIS, "comentarios (línea del código intermedio)"));
-        System.out.println();
 
         String[] lineas = codigo.split("\n");
         int ancho = String.valueOf(lineas.length).length();
 
         for (int i = 0; i < lineas.length; i++) {
-
-            String linea = lineas[i];
-            String limpia = linea.trim();
-            String texto;
-
-            if (limpia.startsWith("#")) {
-                texto = pintar(GRIS, linea);
-            } else if (limpia.startsWith(".")) {
-                texto = pintar(CIAN, linea);
-            } else if (limpia.endsWith(":")) {
-                texto = pintar(AMARILLO, linea);
-            } else {
-                texto = linea;
-            }
-
-            System.out.println(pintar(GRIS, String.format("  %" + ancho + "d │", i + 1)) + " " + texto);
+            String numero = pintar(GRIS, String.format("  %" + ancho + "d │", i + 1));
+            System.out.println(numero + " " + colorearLineaMIPS(lineas[i]));
         }
 
         System.out.println();
     }
+
+    /*
+     * Descripcion: Le pone color a una linea de MIPS.
+     * Entrada: Linea del .asm.
+     * Salida: La linea con colores.
+     * Restricciones: El comentario de la derecha (#) siempre va en gris.
+     */
+    private static String colorearLineaMIPS(String linea) {
+
+        String comentario = "";
+        int gato = linea.indexOf('#');
+
+        /* El # dentro de un texto ("...#...") no es comentario */
+        if (gato >= 0 && !linea.substring(0, gato).contains("\"")) {
+            comentario = pintar(GRIS, linea.substring(gato));
+            linea = linea.substring(0, gato);
+        }
+
+        String limpia = linea.trim();
+
+        if (limpia.isEmpty()) {
+            return linea + comentario;
+        }
+
+        /* .data  .text  .globl main */
+        if (limpia.startsWith(".")) {
+            return pintar(CIAN, linea) + comentario;
+        }
+
+        /* etiqueta: main:  principal.if.1.bloque1: */
+        if (limpia.endsWith(":") && !limpia.contains(" ")) {
+            return pintar(AMARILLO, linea) + comentario;
+        }
+
+        /* dato en .data: var_x: .float 0.0  (solo la directiva lleva color) */
+        int dosPuntos = limpia.indexOf(':');
+        if (dosPuntos > 0 && limpia.substring(dosPuntos + 1).trim().startsWith(".")) {
+            String nombre = limpia.substring(0, dosPuntos);
+            String resto = limpia.substring(dosPuntos + 1).trim();
+            int espacio = resto.indexOf(' ');
+            String directiva = espacio > 0 ? resto.substring(0, espacio) : resto;
+            String valor = espacio > 0 ? resto.substring(espacio) : "";
+
+            return nombre + ": " + pintar(CIAN, directiva) + valor + comentario;
+        }
+
+        /* instruccion: el nombre en negrita; en un salto, la etiqueta en amarillo */
+        int inicio = linea.length() - linea.stripLeading().length();
+        String sangria = linea.substring(0, inicio);
+        String[] partes = limpia.split("\\s+", 2);
+        String instruccion = partes[0];
+        String operandos = partes.length > 1 ? " " + partes[1] : "";
+        String relleno = " ".repeat(Math.max(0, linea.length() - inicio - limpia.length()));
+
+        if (MIPS_SALTOS.contains(instruccion) && !operandos.isEmpty()) {
+            int coma = operandos.lastIndexOf(',');
+            String antes = coma >= 0 ? operandos.substring(0, coma + 2) : " ";
+            String destino = operandos.substring(antes.length()).trim();
+            operandos = antes + pintar(AMARILLO, destino);
+        }
+
+        /* syscall en verde, para ver rapido donde se imprime, se lee o se termina */
+        String color = instruccion.equals("syscall") ? VERDE : NEGRITA;
+
+        return sangria + pintar(color, instruccion) + operandos + relleno + comentario;
+    }
+
     /* ============================================================
        FASES
        ============================================================ */
@@ -480,8 +567,7 @@ public class Main {
         mostrarDato("Carpeta", carpetaCorta(archivoTac));
 
         mostrarEstado(true, "Código intermedio generado.");
-        
-        mostrarCodigoIntermedio(codigo);
+
         return codigo;
     }
 
