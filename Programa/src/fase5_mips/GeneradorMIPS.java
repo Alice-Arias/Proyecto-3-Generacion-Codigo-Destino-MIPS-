@@ -62,11 +62,10 @@ public class GeneradorMIPS {
     /* Linea del intermedio que se pone a la derecha de la siguiente instruccion */
     private String lineaPendiente = null;
 
-    /*
-     * ============================================================
-     * TRADUCCION GENERAL
-     * ============================================================
-     */
+
+    /* ============================================================
+       TRADUCCION GENERAL
+       ============================================================ */
 
     /*
      * Descripcion: Traduce todo el codigo intermedio.
@@ -176,11 +175,10 @@ public class GeneradorMIPS {
         }
     }
 
-    /*
-     * ============================================================
-     * ASIGNACIONES Y OPERACIONES
-     * ============================================================
-     */
+
+    /* ============================================================
+       ASIGNACIONES Y OPERACIONES
+       ============================================================ */
 
     /*
      * Descripcion: Copia un valor en una variable.
@@ -289,8 +287,7 @@ public class GeneradorMIPS {
      * Descripcion: Compara dos float que ya estan en $f0 y $f2.
      * Entrada: Destino y operador de comparacion.
      * Salida: Guarda 1 si se cumple y 0 si no.
-     * Restricciones: MIPS solo tiene c.eq.s, c.lt.s y c.le.s; > y >= se hacen al
-     * reves.
+     * Restricciones: MIPS solo tiene c.eq.s, c.lt.s y c.le.s; > y >= se hacen al reves.
      * Objetivo: Traducir comparaciones con decimales.
      */
     private void compararFloat(String destino, String operador) {
@@ -298,25 +295,12 @@ public class GeneradorMIPS {
         String saltarSi = "bc1t";
 
         switch (operador) {
-            case "<":
-                instruccion("c.lt.s $f0, $f2");
-                break;
-            case "<=":
-                instruccion("c.le.s $f0, $f2");
-                break;
-            case ">":
-                instruccion("c.lt.s $f2, $f0");
-                break;
-            case ">=":
-                instruccion("c.le.s $f2, $f0");
-                break;
-            case "==":
-                instruccion("c.eq.s $f0, $f2");
-                break;
-            case "!=":
-                instruccion("c.eq.s $f0, $f2");
-                saltarSi = "bc1f";
-                break;
+            case "<":  instruccion("c.lt.s $f0, $f2"); break;
+            case "<=": instruccion("c.le.s $f0, $f2"); break;
+            case ">":  instruccion("c.lt.s $f2, $f0"); break;
+            case ">=": instruccion("c.le.s $f2, $f0"); break;
+            case "==": instruccion("c.eq.s $f0, $f2"); break;
+            case "!=": instruccion("c.eq.s $f0, $f2"); saltarSi = "bc1f"; break;
             default:
                 instruccion("# OPERADOR FLOAT NO TRADUCIDO TODAVIA");
                 return;
@@ -384,11 +368,10 @@ public class GeneradorMIPS {
         guardarFloat("$f4", destino);
     }
 
-    /*
-     * ============================================================
-     * ESCRITURA Y FIN DEL PROGRAMA
-     * ============================================================
-     */
+
+    /* ============================================================
+       ESCRITURA Y FIN DEL PROGRAMA
+       ============================================================ */
 
     /*
      * Descripcion: Imprime un valor y un cambio de linea.
@@ -444,11 +427,10 @@ public class GeneradorMIPS {
         instruccion("syscall");
     }
 
-    /*
-     * ============================================================
-     * CARGAR Y GUARDAR VALORES
-     * ============================================================
-     */
+
+    /* ============================================================
+       CARGAR Y GUARDAR VALORES
+       ============================================================ */
 
     /*
      * Descripcion: Pone un valor entero en un registro.
@@ -531,25 +513,20 @@ public class GeneradorMIPS {
 
         if (contenido.startsWith("\\") && contenido.length() > 1) {
             switch (contenido.charAt(1)) {
-                case 'n':
-                    return 10;
-                case 't':
-                    return 9;
-                case '0':
-                    return 0;
-                default:
-                    return contenido.charAt(1);
+                case 'n': return 10;
+                case 't': return 9;
+                case '0': return 0;
+                default:  return contenido.charAt(1);
             }
         }
 
         return contenido.isEmpty() ? 0 : contenido.charAt(0);
     }
 
-    /*
-     * ============================================================
-     * ESCRIBIR EN EL .asm
-     * ============================================================
-     */
+
+    /* ============================================================
+       ESCRIBIR EN EL .asm
+       ============================================================ */
 
     /*
      * Descripcion: Agrega una instruccion al codigo.

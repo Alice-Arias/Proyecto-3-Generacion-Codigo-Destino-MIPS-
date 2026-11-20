@@ -279,13 +279,36 @@ echo JFlex generado correctamente.
 echo.
 
 REM ============================================================
+REM BUSCAR LAS CLASES DEL PROYECTO
+REM ============================================================
+REM Descripcion:
+REM Busco todos los archivos .java dentro de src y de sus carpetas.
+REM
+REM Entrada:
+REM La carpeta src con Main.java y las carpetas de cada fase.
+REM
+REM Salida:
+REM La lista de archivos en la variable FUENTES.
+REM
+REM Restricciones:
+REM Los archivos deben estar dentro de src.
+REM
+REM Objetivo:
+REM No tener que escribir aqui cada clase nueva que se agregue.
+
+set "FUENTES="
+
+for /r "%SRC%" %%f in (*.java) do set FUENTES=!FUENTES! "%%f"
+
+
+REM ============================================================
 REM COMPILAR JAVA
 REM ============================================================
 REM Descripcion:
-REM Compilo los archivos Java necesarios para ejecutar el proyecto.
+REM Compilo todas las clases del proyecto, ordenadas por fase.
 REM
 REM Entrada:
-REM Main.java, TablaSimbolos.java, Lexer.java, parser.java y sym.java.
+REM Las clases encontradas en src y Lexer.java, parser.java y sym.java generados en bin.
 REM
 REM Salida:
 REM Se generan los archivos .class dentro de bin.
@@ -302,16 +325,7 @@ javac ^
     -encoding UTF-8 ^
     -cp "%RUNTIME%;%BIN%" ^
     -d "%BIN%" ^
-    "%SRC%\Main.java" ^
-    "%SRC%\TablaSimbolos.java" ^
-    "%SRC%\Simbolo.java" ^
-    "%SRC%\Ambito.java" ^
-    "%SRC%\ReporteTablaSimbolos.java" ^
-    "%SRC%\CuadroTexto.java" ^
-    "%SRC%\Atrib.java" ^
-    "%SRC%\Generador.java" ^
-    "%SRC%\GeneradorMIPS.java" ^
-    "%SRC%\SeccionDatosMIPS.java" ^
+    !FUENTES! ^
     "%BIN%\Lexer.java" ^
     "%BIN%\parser.java" ^
     "%BIN%\sym.java"
