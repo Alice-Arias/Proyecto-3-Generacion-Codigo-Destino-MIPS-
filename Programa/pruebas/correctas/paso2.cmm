@@ -1,0 +1,19 @@
+void principal є: :э ¿:
+    val int a Ͱ 10 »
+    val int b Ͱ 3 »
+    val int r »
+    r Ͱ a + b »
+    write є: r :э »
+    r Ͱ a - b »
+    write є: r :э »
+    r Ͱ a * b »
+    write є: r :э »
+    r Ͱ a // b »
+    write є: r :э »
+    r Ͱ a mod b »
+    write є: r :э »
+    r Ͱ 2 pot 5 »
+    write є: r :э »
+    r Ͱ a + b * 2 »
+    write є: r :э »
+:?
