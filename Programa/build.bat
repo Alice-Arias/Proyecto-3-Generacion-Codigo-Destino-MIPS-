@@ -310,6 +310,7 @@ javac ^
     "%SRC%\CuadroTexto.java" ^
     "%SRC%\Atrib.java" ^
     "%SRC%\Generador.java" ^
+    "%SRC%\GeneradorMIPS.java" ^
     "%BIN%\Lexer.java" ^
     "%BIN%\parser.java" ^
     "%BIN%\sym.java"
@@ -349,4 +350,4 @@ echo.
 
 echo ============================================================
 
-endlocal
+endlocal

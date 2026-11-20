@@ -274,6 +274,8 @@ public class Main {
         boolean archivoCorrecto = erroresTotales == 0 && !analizador.interrumpido;
 
         String codigoIntermedio = faseCodigoIntermedio(analizador, archivoFuente, archivoCorrecto);
+        
+        faseCodigoMIPS(codigoIntermedio, archivoFuente);
 
         mostrarResultadoFinal(lexico, analizador, tabla, erroresTotales, archivoCorrecto, inicio);
 
@@ -285,7 +287,41 @@ public class Main {
 
         System.out.println();
     }
+        /*
+     * Descripcion: Fase 5: traduce el codigo intermedio a MIPS.
+     * Entrada: Codigo intermedio (null si hubo errores) y archivo fuente.
+     * Salida: Archivo .asm en salida/mips con el mismo nombre del fuente.
+     * Restricciones: Si el archivo tiene errores, no se genera MIPS.
+     */
+    private static void faseCodigoMIPS(String codigoIntermedio, File fuente) throws Exception {
 
+        mostrarSeccion("FASE 5 · CÓDIGO MIPS");
+
+        if (codigoIntermedio == null) {
+            mostrarEstado(false, "No se generó código MIPS: el archivo tiene errores.");
+            return;
+        }
+
+        String codigoMips = new GeneradorMIPS().traducir(codigoIntermedio);
+
+        /* Nombre: prueba.cmm -> prueba.asm */
+        String nombre = fuente.getName();
+        int punto = nombre.lastIndexOf('.');
+        if (punto > 0) {
+            nombre = nombre.substring(0, punto);
+        }
+
+        File carpeta = new File(carpetaPrograma(), "salida" + File.separator + "mips");
+        carpeta.mkdirs();
+
+        File archivoAsm = new File(carpeta, nombre + ".asm");
+        java.nio.file.Files.writeString(archivoAsm.toPath(), codigoMips,
+                java.nio.charset.StandardCharsets.UTF_8);
+
+        mostrarDato("Archivo", archivoAsm.getName());
+        mostrarDato("Carpeta", carpetaCorta(archivoAsm));
+        mostrarEstado(true, "Código MIPS generado.");
+    }
 
     /* ============================================================
        FASES
