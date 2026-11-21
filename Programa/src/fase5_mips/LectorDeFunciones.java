@@ -57,8 +57,12 @@ public class LectorDeFunciones {
             marco.agregarParametro(partes[1], partes[0]);
 
         } else if (linea.startsWith("declaracion# ") || linea.startsWith("declaracionPrevia# ")) {
-            String[] partes = linea.substring(linea.indexOf('#') + 1).trim().split("\\s+");
-            marco.agregarLocal(partes[1], partes[0]);
+            Declaracion declaracion = Declaracion.leer(linea);
+            if (declaracion.esArreglo()) {
+                marco.agregarArreglo(declaracion.nombre, declaracion.tipo, declaracion.tamano);
+            } else {
+                marco.agregarLocal(declaracion.nombre, declaracion.tipo);
+            }
 
         } else if (linea.contains(" = ")) {
             String destino = linea.substring(0, linea.indexOf(" = ")).trim();

@@ -195,19 +195,19 @@ public class GeneradorMIPS {
      * Descripcion: Anota una variable global o limpia una variable local sin valor.
      * Entrada: Linea como "declaracion# int x".
      * Salida: Ninguna, o un sw $zero si es local sin valor.
-     * Restricciones: Las locales ya estan anotadas en el marco de la funcion.
+     * Restricciones: Las locales ya estan anotadas en el marco; los arreglos solo se anotan.
      * Objetivo: Que toda variable empiece en 0 y tenga su tipo conocido.
      */
     private void traducirDeclaracion(String linea) {
 
-        String[] partes = linea.substring(linea.indexOf('#') + 1).trim().split("\\s+");
-        String tipo = partes[0];
-        String nombre = partes[1];
+        Declaracion declaracion = Declaracion.leer(linea);
 
-        if (funcionActual == null) {
-            datos.declararVariable(nombre, tipo);
-        } else if (linea.startsWith("declaracion# ")) {
-            instruccion("sw $zero, " + ubicacion(nombre));
+        if (funcionActual == null && declaracion.esArreglo()) {
+            datos.declararArreglo(declaracion.nombre, declaracion.tipo, declaracion.tamano);
+        } else if (funcionActual == null) {
+            datos.declararVariable(declaracion.nombre, declaracion.tipo);
+        } else if (linea.startsWith("declaracion# ") && !declaracion.esArreglo()) {
+            instruccion("sw $zero, " + ubicacion(declaracion.nombre));
         }
     }
 
@@ -592,12 +592,17 @@ public class GeneradorMIPS {
 
     /*
      * Descripcion: Dice donde esta guardado un nombre.
-     * Entrada: Nombre de variable, parametro o temporal.
-     * Salida: Posicion en la pila (-8($fp)) o etiqueta en .data (var_x).
+     * Entrada: Nombre de variable, parametro, temporal o elemento de arreglo (a[i]).
+     * Salida: Posicion en la pila (-8($fp)), etiqueta en .data (var_x) o 0($t9) para a[i].
      * Restricciones: Primero busca en la funcion actual y despues en las globales.
      * Objetivo: Usar la pila dentro de funciones y .data para lo global.
      */
     private String ubicacion(String nombre) {
+
+        if (ElementoArreglo.es(nombre)) {
+            calcularDireccionDeElemento(ElementoArreglo.leer(nombre));
+            return "0($t9)";
+        }
 
         if (funcionActual != null && funcionActual.tiene(nombre)) {
             return funcionActual.ubicacion(nombre);
@@ -608,6 +613,37 @@ public class GeneradorMIPS {
     }
 
     /*
+     * Descripcion: Deja en $t9 la direccion de un elemento de arreglo.
+     * Entrada: El elemento, por ejemplo a[i] o a[2].
+     * Salida: $t9 = donde empieza el arreglo + indice * 4.
+     * Restricciones: Usa $t8 para el indice; el valor a guardar no puede estar en $t8 ni $t9.
+     * Objetivo: Poder leer y escribir cualquier posicion del arreglo.
+     */
+    private void calcularDireccionDeElemento(ElementoArreglo elemento) {
+
+        String arreglo = elemento.arreglo;
+
+        if (funcionActual != null && funcionActual.esArreglo(arreglo)) {
+            instruccion("addiu $t9, $fp, " + funcionActual.inicioDeArreglo(arreglo));
+        } else {
+            datos.reservar(arreglo);
+            instruccion("la $t9, " + datos.nombreEnMemoria(arreglo));
+        }
+
+        if (SeccionDatosMIPS.esNumeroEntero(elemento.indice)) {
+            int desplazamiento = 4 * Integer.parseInt(elemento.indice);
+            if (desplazamiento != 0) {
+                instruccion("addiu $t9, $t9, " + desplazamiento);
+            }
+            return;
+        }
+
+        instruccion("lw $t8, " + ubicacion(elemento.indice));
+        instruccion("sll $t8, $t8, 2");
+        instruccion("addu $t9, $t9, $t8");
+    }
+
+    /*
      * Descripcion: Dice el tipo de un valor.
      * Entrada: Literal, variable, parametro o temporal.
      * Salida: int, float, bool, char o string.
@@ -615,6 +651,11 @@ public class GeneradorMIPS {
      * Objetivo: Elegir las instrucciones correctas para cada tipo.
      */
     private String tipoDe(String valor) {
+
+        /* el tipo de a[i] es el tipo del arreglo a */
+        if (ElementoArreglo.es(valor)) {
+            valor = ElementoArreglo.leer(valor).arreglo;
+        }
 
         if (funcionActual != null && funcionActual.tiene(valor)) {
             return funcionActual.tipoDe(valor);

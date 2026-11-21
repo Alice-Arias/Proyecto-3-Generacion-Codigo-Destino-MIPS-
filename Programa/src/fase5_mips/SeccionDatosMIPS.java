@@ -22,6 +22,9 @@ public class SeccionDatosMIPS {
     /* Nombre de cada variable o temporal y su tipo */
     private final Map<String, String> tipoPorNombre = new LinkedHashMap<>();
 
+    /* Cada arreglo global y cuantos elementos tiene */
+    private final Map<String, Integer> tamanoPorArreglo = new LinkedHashMap<>();
+
     /* Cada texto fijo ("hola") y su etiqueta (txt_1) */
     private final Map<String, String> etiquetaPorTexto = new LinkedHashMap<>();
 
@@ -37,6 +40,18 @@ public class SeccionDatosMIPS {
      */
     public void declararVariable(String nombre, String tipo) {
         tipoPorNombre.put(nombre, tipo);
+    }
+
+    /*
+     * Descripcion: Anota un arreglo global con su tamano.
+     * Entrada: Nombre, tipo y cantidad de elementos.
+     * Salida: Ninguna.
+     * Restricciones: Cada elemento ocupa una palabra.
+     * Objetivo: Reservar en .data el espacio de todos sus elementos.
+     */
+    public void declararArreglo(String nombre, String tipo, int tamano) {
+        tipoPorNombre.put(nombre, tipo);
+        tamanoPorArreglo.put(nombre, tamano);
     }
 
     /*
@@ -152,7 +167,14 @@ public class SeccionDatosMIPS {
 
             String nombre = entrada.getKey();
             String espacio = entrada.getValue().equals("float") ? ".float 0.0" : ".word 0";
-            String linea = nombreEnMemoria(nombre) + ": " + espacio + "\n";
+
+            /* Un arreglo reserva 4 bytes por elemento; .align 2 lo deja en una direccion multiplo de 4 */
+            if (tamanoPorArreglo.containsKey(nombre)) {
+                espacio = ".space " + (4 * tamanoPorArreglo.get(nombre));
+            }
+
+            String linea = (tamanoPorArreglo.containsKey(nombre) ? ".align 2\n" : "")
+                    + nombreEnMemoria(nombre) + ": " + espacio + "\n";
 
             if (esTemporal(nombre)) {
                 temporales.append(linea);

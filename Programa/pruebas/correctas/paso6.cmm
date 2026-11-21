@@ -1,0 +1,49 @@
+| ===== Paso 6: arreglos =====
+val int numerosʃ:5:ʅ Ͱ ¿:10, 20, 30, 40, 50:? »
+val float notasʃ: :ʅ Ͱ ¿:9.5, 8.0, 7.25:? »
+val int copiaʃ:5:ʅ »
+
+| Arreglo local dentro de una funcion
+int sumarHasta є: int tope :э ¿:
+    val int datosʃ:4:ʅ Ͱ ¿:1, 2, 3, 4:? »
+    val int s Ͱ 0 »
+    for є: val int i Ͱ 0 » ʃ:i:ʅ < ʃ:tope:ʅ » i++ :э ¿:
+        s Ͱ s + datosʃ:i:ʅ »
+    :?
+    return s »
+:?
+
+| Recibe un elemento de arreglo como argumento
+int doble є: int x :э ¿:
+    return x * 2 »
+:?
+
+void principal є: :э ¿:
+    | leer con indice fijo
+    write є: numerosʃ:0:ʅ :э »
+    write є: numerosʃ:4:ʅ :э »
+
+    | escribir con indice fijo
+    numerosʃ:2:ʅ Ͱ 99 »
+    write є: numerosʃ:2:ʅ :э »
+
+    | indice con variable y expresion
+    val int k Ͱ 1 »
+    write є: numerosʃ:k:ʅ :э »
+    copiaʃ:k + 2:ʅ Ͱ numerosʃ:k:ʅ + 5 »
+    write є: copiaʃ:3:ʅ :э »
+
+    | recorrer con un ciclo
+    val int total Ͱ 0 »
+    for є: val int i Ͱ 0 » ʃ:i:ʅ < ʃ:5:ʅ » i++ :э ¿:
+        total Ͱ total + numerosʃ:i:ʅ »
+    :?
+    write є: total :э »
+
+    | arreglo float
+    write є: notasʃ:2:ʅ :э »
+
+    | arreglo local en una funcion y elemento como argumento
+    write є: sumarHasta є: 4 :э :э »
+    write є: doble є: numerosʃ:4:ʅ :э :э »
+:?

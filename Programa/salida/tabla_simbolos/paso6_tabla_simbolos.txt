@@ -1,0 +1,41 @@
+  Árbol de ámbitos
+
+  global  (6 símbolos)
+  ├── funcion sumarHasta  (3 símbolos)
+  │   └── for  (1 símbolo)
+  │       └── cuerpo for  (0 símbolos)
+  ├── funcion doble  (1 símbolo)
+  └── procedimiento principal  (2 símbolos)
+      └── for  (1 símbolo)
+          └── cuerpo for  (0 símbolos)
+
+  Categorías: variable  arreglo  parámetro  función  procedimiento
+  Dirección:   global+n = zona estática                 ----   pila+n = registro de activación
+  Acceso:      público = declarado en el ámbito global ------- privado = dentro de una función o bloque
+
+  ┌─────┬────────────────────┬───────────────┬─────────┬──────────────────────────┬───────┬────────────┬─────────────┬────────────────────────┬──────────┬───────┬─────┐
+  │ Nº  │ NOMBRE             │ CATEGORÍA     │ TIPO    │ ÁMBITO                   │ BYTES │ DIMENSIÓN  │ DIRECCIÓN   │ VALOR INICIAL          │ ACCESO   │ LÍNEA │ COL │
+  ├─────┼────────────────────┼───────────────┼─────────┼──────────────────────────┼───────┼────────────┼─────────────┼────────────────────────┼──────────┼───────┼─────┤
+  │ 1   │ numeros            │ arreglo       │ int     │ global                   │ 20    │ [0..4]     │ global+0    │ ¿: 10, 20, 30, 40, 50  │ público  │ 2     │ 9   │
+  │     │                    │               │         │                          │       │            │             │ :?                     │          │       │     │
+  │ 2   │ notas              │ arreglo       │ float   │ global                   │ 12    │ [0..2]     │ global+20   │ ¿: 9.5, 8.0, 7.25 :?   │ público  │ 3     │ 11  │
+  │ 3   │ copia              │ arreglo       │ int     │ global                   │ 20    │ [0..4]     │ global+32   │ —                      │ público  │ 4     │ 9   │
+  │ 4   │ sumarHasta         │ función       │ int     │ global                   │ —     │ —          │ código      │ —                      │ público  │ 7     │ 5   │
+  │ 5   │ doble              │ función       │ int     │ global                   │ —     │ —          │ código      │ —                      │ público  │ 17    │ 5   │
+  │ 6   │ principal          │ procedimiento │ void    │ global                   │ —     │ —          │ código      │ —                      │ público  │ 21    │ 6   │
+  ├─────┼────────────────────┼───────────────┼─────────┼──────────────────────────┼───────┼────────────┼─────────────┼────────────────────────┼──────────┼───────┼─────┤
+  │ 7   │ tope               │ parámetro     │ int     │ función sumarHasta       │ 4     │ —          │ pila+0      │ —                      │ privado  │ 7     │ 23  │
+  │ 8   │ datos              │ arreglo       │ int     │ función sumarHasta       │ 16    │ [0..3]     │ pila+4      │ ¿: 1, 2, 3, 4 :?       │ privado  │ 8     │ 13  │
+  │ 9   │ s                  │ variable      │ int     │ función sumarHasta       │ 4     │ —          │ pila+20     │ 0                      │ privado  │ 9     │ 13  │
+  ├─────┼────────────────────┼───────────────┼─────────┼──────────────────────────┼───────┼────────────┼─────────────┼────────────────────────┼──────────┼───────┼─────┤
+  │ 10  │ i                  │ variable      │ int     │ función sumarHasta › for │ 4     │ —          │ pila+24     │ 0                      │ privado  │ 10    │ 20  │
+  ├─────┼────────────────────┼───────────────┼─────────┼──────────────────────────┼───────┼────────────┼─────────────┼────────────────────────┼──────────┼───────┼─────┤
+  │ 11  │ x                  │ parámetro     │ int     │ función doble            │ 4     │ —          │ pila+0      │ —                      │ privado  │ 17    │ 18  │
+  ├─────┼────────────────────┼───────────────┼─────────┼──────────────────────────┼───────┼────────────┼─────────────┼────────────────────────┼──────────┼───────┼─────┤
+  │ 12  │ k                  │ variable      │ int     │ procedimiento principal  │ 4     │ —          │ pila+0      │ 1                      │ privado  │ 31    │ 13  │
+  │ 13  │ total              │ variable      │ int     │ procedimiento principal  │ 4     │ —          │ pila+4      │ 0                      │ privado  │ 37    │ 13  │
+  ├─────┼────────────────────┼───────────────┼─────────┼──────────────────────────┼───────┼────────────┼─────────────┼────────────────────────┼──────────┼───────┼─────┤
+  │ 14  │ i                  │ variable      │ int     │ procedimiento principal  │ 4     │ —          │ pila+8      │ 0                      │ privado  │ 38    │ 20  │
+  │     │                    │               │         │ › for                    │       │            │             │                        │          │       │     │
+  └─────┴────────────────────┴───────────────┴─────────┴──────────────────────────┴───────┴────────────┴─────────────┴────────────────────────┴──────────┴───────┴─────┘
+

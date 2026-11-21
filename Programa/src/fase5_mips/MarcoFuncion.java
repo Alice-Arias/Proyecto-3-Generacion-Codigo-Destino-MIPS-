@@ -4,6 +4,24 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+/*
+ * Descripcion: Guarda donde vive cada parametro, variable local y temporal de una funcion.
+ * Entrada: Los nombres y tipos que aparecen dentro de la funcion en el codigo intermedio.
+ * Salida: La posicion de cada nombre en la pila, por ejemplo -8($fp).
+ * Restricciones: Cada valor ocupa una palabra (4 bytes).
+ * Objetivo: Que cada llamada tenga sus propias variables y asi funcione la recursion.
+ *
+ * Asi queda la pila de una funcion con n parametros:
+ *
+ *      parametro 0        $fp + 8 + 4*(n-1)
+ *      ...
+ *      parametro n-1      $fp + 8
+ *      $ra guardado       $fp + 4
+ *      $fp anterior       $fp + 0   <- $fp
+ *      local 1            $fp - 4
+ *      local 2            $fp - 8
+ *      ...                          <- $sp
+ */
 public class MarcoFuncion {
 
     /* Tamano de una palabra en bytes */
@@ -23,6 +41,9 @@ public class MarcoFuncion {
 
     /* Cada nombre de la funcion y su posicion desde $fp */
     private final Map<String, Integer> posicionPorNombre = new HashMap<>();
+
+    /* Cada arreglo local y cuantos elementos tiene */
+    private final Map<String, Integer> tamanoPorArreglo = new HashMap<>();
 
     /* Palabras que ocupan las variables locales y temporales */
     private int palabrasLocales = 0;
@@ -84,6 +105,40 @@ public class MarcoFuncion {
     }
 
     /*
+     * Descripcion: Anota un arreglo local con su tamano.
+     * Entrada: Nombre, tipo y cantidad de elementos.
+     * Salida: Ninguna.
+     * Restricciones: Cada elemento ocupa una palabra.
+     * Objetivo: Reservarle al arreglo todos sus elementos en la pila.
+     */
+    public void agregarArreglo(String nombre, String tipo, int tamano) {
+        tipoPorNombre.putIfAbsent(nombre, tipo);
+        tamanoPorArreglo.put(nombre, tamano);
+    }
+
+    /*
+     * Descripcion: Dice si un nombre es un arreglo de esta funcion.
+     * Entrada: Nombre.
+     * Salida: true si es un arreglo local.
+     * Restricciones: Ninguna.
+     * Objetivo: Calcular la direccion de sus elementos.
+     */
+    public boolean esArreglo(String nombre) {
+        return tamanoPorArreglo.containsKey(nombre);
+    }
+
+    /*
+     * Descripcion: Da la posicion donde empieza un arreglo en la pila.
+     * Entrada: Nombre del arreglo.
+     * Salida: Numero como -16 (el elemento 0 esta en -16($fp)).
+     * Restricciones: El arreglo debe pertenecer a la funcion.
+     * Objetivo: Sumarle el indice para llegar a cada elemento.
+     */
+    public int inicioDeArreglo(String nombre) {
+        return posicionPorNombre.get(nombre);
+    }
+
+    /*
      * Descripcion: Le da a cada nombre su posicion en la pila.
      * Entrada: Ninguna.
      * Salida: Ninguna.
@@ -101,7 +156,8 @@ public class MarcoFuncion {
 
         for (String nombre : tipoPorNombre.keySet()) {
             if (!posicionPorNombre.containsKey(nombre)) {
-                palabrasLocales++;
+                /* Un arreglo ocupa una palabra por elemento; empieza en la direccion mas baja */
+                palabrasLocales += tamanoPorArreglo.getOrDefault(nombre, 1);
                 posicionPorNombre.put(nombre, -PALABRA * palabrasLocales);
             }
         }
