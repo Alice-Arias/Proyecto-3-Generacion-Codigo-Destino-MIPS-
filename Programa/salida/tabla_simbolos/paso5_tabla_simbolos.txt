@@ -1,0 +1,52 @@
+  Árbol de ámbitos
+
+  global  (10 símbolos)
+  ├── funcion factorial  (1 símbolo)
+  │   └── if  (0 símbolos)
+  ├── funcion fib  (1 símbolo)
+  │   └── if  (0 símbolos)
+  ├── funcion suma  (3 símbolos)
+  ├── funcion area  (1 símbolo)
+  ├── funcion inicial  (2 símbolos)
+  │   └── if  (0 símbolos)
+  ├── funcion contar  (0 símbolos)
+  ├── funcion diez  (0 símbolos)
+  └── procedimiento principal  (1 símbolo)
+      ├── if  (0 símbolos)
+      └── if  (0 símbolos)
+
+  Categorías: variable  arreglo  parámetro  función  procedimiento
+  Dirección:   global+n = zona estática                 ----   pila+n = registro de activación
+  Acceso:      público = declarado en el ámbito global ------- privado = dentro de una función o bloque
+
+  ┌─────┬────────────────────┬───────────────┬─────────┬──────────────────────────┬───────┬────────────┬─────────────┬────────────────────────┬──────────┬───────┬─────┐
+  │ Nº  │ NOMBRE             │ CATEGORÍA     │ TIPO    │ ÁMBITO                   │ BYTES │ DIMENSIÓN  │ DIRECCIÓN   │ VALOR INICIAL          │ ACCESO   │ LÍNEA │ COL │
+  ├─────┼────────────────────┼───────────────┼─────────┼──────────────────────────┼───────┼────────────┼─────────────┼────────────────────────┼──────────┼───────┼─────┤
+  │ 1   │ contador           │ variable      │ int     │ global                   │ 4     │ —          │ global+0    │ 0                      │ público  │ 2     │ 9   │
+  │ 2   │ pi                 │ variable      │ float   │ global                   │ 4     │ —          │ global+4    │ 3.5                    │ público  │ 3     │ 11  │
+  │ 3   │ factorial          │ función       │ int     │ global                   │ —     │ —          │ código      │ —                      │ público  │ 6     │ 5   │
+  │ 4   │ fib                │ función       │ int     │ global                   │ —     │ —          │ código      │ —                      │ público  │ 14    │ 5   │
+  │ 5   │ suma               │ función       │ int     │ global                   │ —     │ —          │ código      │ —                      │ público  │ 22    │ 5   │
+  │ 6   │ area               │ función       │ float   │ global                   │ —     │ —          │ código      │ —                      │ público  │ 28    │ 7   │
+  │ 7   │ inicial            │ función       │ char    │ global                   │ —     │ —          │ código      │ —                      │ público  │ 33    │ 6   │
+  │ 8   │ contar             │ función       │ int     │ global                   │ —     │ —          │ código      │ —                      │ público  │ 41    │ 5   │
+  │ 9   │ diez               │ función       │ int     │ global                   │ —     │ —          │ código      │ —                      │ público  │ 47    │ 5   │
+  │ 10  │ principal          │ procedimiento │ void    │ global                   │ —     │ —          │ código      │ —                      │ público  │ 51    │ 6   │
+  ├─────┼────────────────────┼───────────────┼─────────┼──────────────────────────┼───────┼────────────┼─────────────┼────────────────────────┼──────────┼───────┼─────┤
+  │ 11  │ n                  │ parámetro     │ int     │ función factorial        │ 4     │ —          │ pila+0      │ —                      │ privado  │ 6     │ 22  │
+  ├─────┼────────────────────┼───────────────┼─────────┼──────────────────────────┼───────┼────────────┼─────────────┼────────────────────────┼──────────┼───────┼─────┤
+  │ 12  │ n                  │ parámetro     │ int     │ función fib              │ 4     │ —          │ pila+0      │ —                      │ privado  │ 14    │ 16  │
+  ├─────┼────────────────────┼───────────────┼─────────┼──────────────────────────┼───────┼────────────┼─────────────┼────────────────────────┼──────────┼───────┼─────┤
+  │ 13  │ a                  │ parámetro     │ int     │ función suma             │ 4     │ —          │ pila+0      │ —                      │ privado  │ 22    │ 17  │
+  │ 14  │ b                  │ parámetro     │ int     │ función suma             │ 4     │ —          │ pila+4      │ —                      │ privado  │ 22    │ 24  │
+  │ 15  │ r                  │ variable      │ int     │ función suma             │ 4     │ —          │ pila+8      │ a + b                  │ privado  │ 23    │ 13  │
+  ├─────┼────────────────────┼───────────────┼─────────┼──────────────────────────┼───────┼────────────┼─────────────┼────────────────────────┼──────────┼───────┼─────┤
+  │ 16  │ r                  │ parámetro     │ float   │ función area             │ 4     │ —          │ pila+0      │ —                      │ privado  │ 28    │ 21  │
+  ├─────┼────────────────────┼───────────────┼─────────┼──────────────────────────┼───────┼────────────┼─────────────┼────────────────────────┼──────────┼───────┼─────┤
+  │ 17  │ c                  │ parámetro     │ char    │ función inicial          │ 1     │ —          │ pila+0      │ —                      │ privado  │ 33    │ 22  │
+  │ 18  │ mayus              │ parámetro     │ bool    │ función inicial          │ 1     │ —          │ pila+1      │ —                      │ privado  │ 33    │ 30  │
+  ├─────┼────────────────────┼───────────────┼─────────┼──────────────────────────┼───────┼────────────┼─────────────┼────────────────────────┼──────────┼───────┼─────┤
+  │ 19  │ letra              │ variable      │ char    │ procedimiento principal  │ 1     │ —          │ pila+0      │ inicial є: 'z', false  │ privado  │ 57    │ 14  │
+  │     │                    │               │         │                          │       │            │             │ :э                     │          │       │     │
+  └─────┴────────────────────┴───────────────┴─────────┴──────────────────────────┴───────┴────────────┴─────────────┴────────────────────────┴──────────┴───────┴─────┘
+

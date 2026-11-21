@@ -1,0 +1,69 @@
+| ===== Paso 5: funciones =====
+val int contador Ͱ 0 »
+val float pi Ͱ 3.5 »
+
+| Recursion simple
+int factorial є: int n :э ¿:
+    if є: ʃ:n:ʅ <= ʃ:1:ʅ :э ¿:
+        return 1 »
+    :?
+    return n * factorial є: n - 1 :э »
+:?
+
+| Recursion doble
+int fib є: int n :э ¿:
+    if є: ʃ:n:ʅ < ʃ:2:ʅ :э ¿:
+        return n »
+    :?
+    return fib є: n - 1 :э + fib є: n - 2 :э »
+:?
+
+| Dos parametros y variable local
+int suma є: int a, int b :э ¿:
+    val int r Ͱ a + b »
+    return r »
+:?
+
+| Parametros float y uso de una global
+float area є: float r :э ¿:
+    return pi * r * r »
+:?
+
+| Parametros char y bool, dos return
+char inicial є: char c, bool mayus :э ¿:
+    if є: mayus :э ¿:
+        return 'A' »
+    :?
+    return c »
+:?
+
+| Funcion que cambia una global (se llama sin usar su resultado)
+int contar є: :э ¿:
+    contador Ͱ contador + 1 »
+    return contador »
+:?
+
+| Funcion sin parametros
+int diez є: :э ¿:
+    return 10 »
+:?
+
+void principal є: :э ¿:
+    write є: factorial є: 5 :э :э »
+    write є: fib є: 10 :э :э »
+    write є: suma є: 3, 4 :э :э »
+    write є: suma є: suma є: 1, 2 :э, diez є: :э :э :э »
+    write є: area є: 2.0 :э :э »
+    val char letra Ͱ inicial є: 'z', false :э »
+    if є: ʃ:letra:ʅ == ʃ:'z':ʅ :э ¿:
+        write є: "inicial correcta" :э »
+    :?
+    letra Ͱ inicial є: 'z', true :э »
+    if є: ʃ:letra:ʅ == ʃ:'A':ʅ :э ¿:
+        write є: "mayuscula correcta" :э »
+    :?
+    contar є: :э »
+    contar є: :э »
+    contar є: :э »
+    write є: contador :э »
+:?

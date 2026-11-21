@@ -6,7 +6,7 @@ import java.util.Map;
  * Descripcion: Traduce el codigo intermedio (.tac) a codigo MIPS.
  * Entrada: Texto del codigo intermedio.
  * Salida: Texto del codigo MIPS (.asm) listo para QtSpim.
- * Restricciones: Maneja int, float, string, char y bool, operaciones, if, ciclos y write.
+ * Restricciones: Maneja tipos, operaciones, if, ciclos, write y funciones con la pila.
  * Objetivo: Generar el codigo destino del compilador.
  */
 public class GeneradorMIPS {
@@ -170,6 +170,12 @@ public class GeneradorMIPS {
             salirDeFuncion();
         } else if (linea.startsWith("param_")) {
             lineaPendiente = null;
+        } else if (linea.startsWith("param ")) {
+            empujarArgumento(linea.substring("param ".length()).trim());
+        } else if (linea.startsWith("call ")) {
+            llamar(linea.substring("call ".length()).trim(), null);
+        } else if (linea.equals("return") || linea.startsWith("return ")) {
+            retornar(linea.length() > "return".length() ? linea.substring("return ".length()).trim() : null);
         } else if (linea.startsWith("declaracion# ") || linea.startsWith("declaracionPrevia# ")) {
             traducirDeclaracion(linea);
         } else if (linea.startsWith("write ")) {
@@ -234,6 +240,11 @@ public class GeneradorMIPS {
         int posicionIgual = linea.indexOf(" = ");
         String destino = linea.substring(0, posicionIgual).trim();
         String valor = linea.substring(posicionIgual + " = ".length()).trim();
+
+        if (valor.startsWith("call ")) {
+            llamar(valor.substring("call ".length()).trim(), destino);
+            return;
+        }
 
         if (SeccionDatosMIPS.esTexto(valor) || SeccionDatosMIPS.esCaracter(valor)) {
             copiar(destino, valor);
@@ -446,7 +457,7 @@ public class GeneradorMIPS {
 
 
     /* ============================================================
-       FUNCIONES: ENTRAR Y SALIR
+       FUNCIONES: ENTRAR, SALIR, LLAMAR Y RETORNAR
        ============================================================ */
 
     /*
@@ -510,10 +521,74 @@ public class GeneradorMIPS {
         instruccion("jr $ra");
     }
 
+    /*
+     * Descripcion: Traduce un return.
+     * Entrada: El valor a devolver, o null si no devuelve nada.
+     * Salida: El valor en $v0 (o $f0 si es float) y el regreso.
+     * Restricciones: En principal, return termina el programa.
+     * Objetivo: Traducir "return x".
+     */
+    private void retornar(String valor) {
 
-    /* ============================================================
-       DONDE ESTA CADA NOMBRE Y DE QUE TIPO ES
-       ============================================================ */
+        if (funcionActual == null || funcionActual.esPrincipal()) {
+            terminarPrograma();
+            return;
+        }
+
+        if (valor != null && esFloat(valor)) {
+            cargarFloat(valor, "$f0");
+        } else if (valor != null) {
+            cargarEntero(valor, "$v0");
+        }
+
+        regresar();
+    }
+
+    /*
+     * Descripcion: Mete un argumento en la pila antes de una llamada.
+     * Entrada: El argumento.
+     * Salida: El valor queda en 0($sp).
+     * Restricciones: Los argumentos se meten en el mismo orden que los parametros.
+     * Objetivo: Traducir "param x".
+     */
+    private void empujarArgumento(String valor) {
+
+        if (esFloat(valor)) {
+            cargarFloat(valor, "$f0");
+            instruccion("addiu $sp, $sp, -4");
+            instruccion("s.s $f0, 0($sp)");
+        } else {
+            cargarEntero(valor, "$t0");
+            instruccion("addiu $sp, $sp, -4");
+            instruccion("sw $t0, 0($sp)");
+        }
+    }
+
+    /*
+     * Descripcion: Llama a una funcion.
+     * Entrada: Texto como "int$suma, 2" y donde guardar el resultado (o null).
+     * Salida: jal, sacar los argumentos de la pila y guardar el resultado.
+     * Restricciones: El resultado llega en $v0, o en $f0 si es float.
+     * Objetivo: Traducir "call f, n" y "x = call f, n".
+     */
+    private void llamar(String datosLlamada, String destino) {
+
+        String[] partes = datosLlamada.split(",");
+        String funcion = partes[0].trim();
+        int cantidadArgumentos = partes.length > 1 ? Integer.parseInt(partes[1].trim()) : 0;
+
+        instruccion("jal " + convertirEtiqueta(funcion));
+
+        if (cantidadArgumentos > 0) {
+            instruccion("addiu $sp, $sp, " + (4 * cantidadArgumentos));
+        }
+
+        if (destino != null && esFloat(destino)) {
+            guardarFloat("$f0", destino);
+        } else if (destino != null) {
+            guardarEntero("$v0", destino);
+        }
+    }
 
     /*
      * Descripcion: Dice donde esta guardado un nombre.
