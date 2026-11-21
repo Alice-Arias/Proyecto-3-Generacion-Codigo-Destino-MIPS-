@@ -161,22 +161,40 @@ public class SeccionDatosMIPS {
             }
         }
 
+        StringBuilder numeros = new StringBuilder();
+        for (Map.Entry<String, String> entrada : etiquetaPorNumero.entrySet()) {
+            numeros.append(entrada.getValue()).append(": .float ").append(entrada.getKey()).append("\n");
+        }
+
+        StringBuilder textos = new StringBuilder();
+        for (Map.Entry<String, String> entrada : etiquetaPorTexto.entrySet()) {
+            textos.append(entrada.getValue()).append(": .asciiz ").append(entrada.getKey()).append("\n");
+        }
+
         StringBuilder datos = new StringBuilder(".data\n");
 
-        datos.append("\n# ---------- variables del programa ----------\n").append(variables);
-        datos.append("\n# ---------- temporales del codigo intermedio ----------\n").append(temporales);
-
-        datos.append("\n# ---------- numeros float fijos ----------\n");
-        for (Map.Entry<String, String> entrada : etiquetaPorNumero.entrySet()) {
-            datos.append(entrada.getValue()).append(": .float ").append(entrada.getKey()).append("\n");
-        }
-
-        datos.append("\n# ---------- textos fijos ----------\n");
-        for (Map.Entry<String, String> entrada : etiquetaPorTexto.entrySet()) {
-            datos.append(entrada.getValue()).append(": .asciiz ").append(entrada.getKey()).append("\n");
-        }
+        agregarGrupo(datos, "variables del programa", variables);
+        agregarGrupo(datos, "temporales del codigo intermedio", temporales);
+        agregarGrupo(datos, "numeros float fijos", numeros);
+        agregarGrupo(datos, "textos fijos", textos);
 
         return datos.toString();
+    }
+
+    /*
+     * Descripcion: Agrega un grupo de .data con su titulo.
+     * Entrada: Donde escribir, el titulo del grupo y su contenido.
+     * Salida: Ninguna.
+     * Restricciones: Si el grupo esta vacio, no se escribe nada (ni el titulo).
+     * Objetivo: Que no salgan titulos vacios en el .asm.
+     */
+    private void agregarGrupo(StringBuilder datos, String titulo, StringBuilder contenido) {
+
+        if (contenido.length() == 0) {
+            return;
+        }
+
+        datos.append("\n# ---------- ").append(titulo).append(" ----------\n").append(contenido);
     }
 
     /*

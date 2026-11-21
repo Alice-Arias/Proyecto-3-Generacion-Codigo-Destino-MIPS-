@@ -63,11 +63,13 @@ public class GeneradorMIPS {
     /* Linea del intermedio que se pone a la derecha de la siguiente instruccion */
     private String lineaPendiente = null;
 
-        /* Cada funcion del programa (int$suma) con su marco en la pila */
+    /* Cada funcion del programa (int$suma) con su marco en la pila */
     private Map<String, MarcoFuncion> funciones = new LinkedHashMap<>();
 
     /* Funcion que se esta traduciendo (null = codigo global) */
     private MarcoFuncion funcionActual = null;
+
+
     /* ============================================================
        TRADUCCION GENERAL
        ============================================================ */
@@ -81,15 +83,70 @@ public class GeneradorMIPS {
      */
     public String traducir(String codigoIntermedio) {
 
+        String[] lineas = codigoIntermedio.split("\n");
+
+        funciones = LectorDeFunciones.leer(lineas);
+
         codigo.append("main:\n");
-
-        for (String linea : codigoIntermedio.split("\n")) {
-            traducirLinea(linea.trim());
-        }
-
-        terminarPrograma();
+        traducirCodigoGlobal(lineas);
+        traducirFunciones(lineas);
 
         return datos.generar() + "\n.text\n.globl main\n" + codigo;
+    }
+
+    /*
+     * Descripcion: Traduce lo que esta fuera de las funciones y salta a principal.
+     * Entrada: Lineas del .tac.
+     * Salida: Instrucciones en main.
+     * Restricciones: Los goto del codigo global se cambian por un solo salto a principal.
+     * Objetivo: Darle valor a las variables globales antes de empezar.
+     */
+    private void traducirCodigoGlobal(String[] lineas) {
+
+        MarcoFuncion funcion = null;
+
+        for (String lineaOriginal : lineas) {
+
+            String linea = lineaOriginal.trim();
+
+            if (funcion == null && LectorDeFunciones.esInicioDeFuncion(linea)) {
+                funcion = funciones.get(LectorDeFunciones.etiquetaDeInicio(linea));
+            } else if (funcion != null) {
+                if (LectorDeFunciones.esFinDe(funcion, linea)) {
+                    funcion = null;
+                }
+            } else if (!linea.startsWith("goto ")) {
+                traducirLinea(linea);
+            }
+        }
+
+        if (funciones.containsKey("void$principal")) {
+            lineaPendiente = "inicio del programa: ir a principal";
+            instruccion("j " + convertirEtiqueta("void$principal"));
+        } else {
+            terminarPrograma();
+        }
+    }
+
+    /*
+     * Descripcion: Traduce todas las funciones, una despues de otra.
+     * Entrada: Lineas del .tac.
+     * Salida: Instrucciones de cada funcion.
+     * Restricciones: Se salta el codigo global (ya se tradujo).
+     * Objetivo: Generar el codigo de cada funcion con su pila.
+     */
+    private void traducirFunciones(String[] lineas) {
+
+        for (String lineaOriginal : lineas) {
+
+            String linea = lineaOriginal.trim();
+
+            if (funcionActual == null && !LectorDeFunciones.esInicioDeFuncion(linea)) {
+                continue;
+            }
+
+            traducirLinea(linea);
+        }
     }
 
     /*
@@ -107,7 +164,13 @@ public class GeneradorMIPS {
 
         lineaPendiente = linea;
 
-        if (linea.startsWith("declaracion# ") || linea.startsWith("declaracionPrevia# ")) {
+        if (LectorDeFunciones.esInicioDeFuncion(linea)) {
+            entrarAFuncion(LectorDeFunciones.etiquetaDeInicio(linea));
+        } else if (funcionActual != null && LectorDeFunciones.esFinDe(funcionActual, linea)) {
+            salirDeFuncion();
+        } else if (linea.startsWith("param_")) {
+            lineaPendiente = null;
+        } else if (linea.startsWith("declaracion# ") || linea.startsWith("declaracionPrevia# ")) {
             traducirDeclaracion(linea);
         } else if (linea.startsWith("write ")) {
             escribir(linea.substring("write ".length()).trim());
@@ -123,15 +186,23 @@ public class GeneradorMIPS {
     }
 
     /*
-     * Descripcion: Anota el tipo de una variable declarada.
+     * Descripcion: Anota una variable global o limpia una variable local sin valor.
      * Entrada: Linea como "declaracion# int x".
-     * Salida: Ninguna.
-     * Restricciones: No genera instrucciones.
-     * Objetivo: Saber de que tipo es cada variable.
+     * Salida: Ninguna, o un sw $zero si es local sin valor.
+     * Restricciones: Las locales ya estan anotadas en el marco de la funcion.
+     * Objetivo: Que toda variable empiece en 0 y tenga su tipo conocido.
      */
     private void traducirDeclaracion(String linea) {
+
         String[] partes = linea.substring(linea.indexOf('#') + 1).trim().split("\\s+");
-        datos.declararVariable(partes[1], partes[0]);
+        String tipo = partes[0];
+        String nombre = partes[1];
+
+        if (funcionActual == null) {
+            datos.declararVariable(nombre, tipo);
+        } else if (linea.startsWith("declaracion# ")) {
+            instruccion("sw $zero, " + ubicacion(nombre));
+        }
     }
 
     /*
@@ -373,7 +444,74 @@ public class GeneradorMIPS {
         guardarFloat("$f4", destino);
     }
 
-        /* ============================================================
+
+    /* ============================================================
+       FUNCIONES: ENTRAR Y SALIR
+       ============================================================ */
+
+    /*
+     * Descripcion: Empieza una funcion y prepara su espacio en la pila.
+     * Entrada: Etiqueta como int$suma.
+     * Salida: La etiqueta y el prologo (guardar $ra y $fp, reservar locales).
+     * Restricciones: El marco ya debe estar calculado.
+     * Objetivo: Que cada llamada tenga sus propias variables.
+     */
+    private void entrarAFuncion(String etiqueta) {
+
+        funcionActual = funciones.get(etiqueta);
+        lineaPendiente = null;
+
+        codigo.append("\n# ============================================================\n");
+        codigo.append("# funcion ").append(etiqueta).append("\n");
+        codigo.append("# ============================================================");
+        ponerEtiqueta(convertirEtiqueta(etiqueta));
+
+        lineaPendiente = "guardar $ra y $fp, y reservar las variables locales";
+        instruccion("addiu $sp, $sp, -8");
+        instruccion("sw $ra, 4($sp)");
+        instruccion("sw $fp, 0($sp)");
+        instruccion("move $fp, $sp");
+
+        if (funcionActual.bytesLocales() > 0) {
+            instruccion("addiu $sp, $sp, -" + funcionActual.bytesLocales());
+        }
+    }
+
+    /*
+     * Descripcion: Termina una funcion.
+     * Entrada: Ninguna.
+     * Salida: Regreso a quien llamo, o fin del programa si es principal.
+     * Restricciones: Se usa en la linea tipo$nombre$final.
+     * Objetivo: Que una funcion sin return tambien regrese bien.
+     */
+    private void salirDeFuncion() {
+
+        if (funcionActual.esPrincipal()) {
+            terminarPrograma();
+        } else {
+            regresar();
+        }
+
+        funcionActual = null;
+    }
+
+    /*
+     * Descripcion: Devuelve el control a quien llamo la funcion.
+     * Entrada: Ninguna.
+     * Salida: Instrucciones del epilogo.
+     * Restricciones: El valor de retorno ya debe estar en $v0 o $f0.
+     * Objetivo: Recuperar $fp y $ra y volver con jr $ra.
+     */
+    private void regresar() {
+        instruccion("move $sp, $fp");
+        instruccion("lw $fp, 0($sp)");
+        instruccion("lw $ra, 4($sp)");
+        instruccion("addiu $sp, $sp, 8");
+        instruccion("jr $ra");
+    }
+
+
+    /* ============================================================
        DONDE ESTA CADA NOMBRE Y DE QUE TIPO ES
        ============================================================ */
 
@@ -420,6 +558,8 @@ public class GeneradorMIPS {
     private boolean esFloat(String valor) {
         return tipoDe(valor).equals("float");
     }
+
+
     /* ============================================================
        ESCRITURA Y FIN DEL PROGRAMA
        ============================================================ */
