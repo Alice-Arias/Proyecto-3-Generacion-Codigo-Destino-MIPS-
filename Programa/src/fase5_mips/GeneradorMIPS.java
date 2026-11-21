@@ -1,4 +1,5 @@
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /*
@@ -62,7 +63,11 @@ public class GeneradorMIPS {
     /* Linea del intermedio que se pone a la derecha de la siguiente instruccion */
     private String lineaPendiente = null;
 
+        /* Cada funcion del programa (int$suma) con su marco en la pila */
+    private Map<String, MarcoFuncion> funciones = new LinkedHashMap<>();
 
+    /* Funcion que se esta traduciendo (null = codigo global) */
+    private MarcoFuncion funcionActual = null;
     /* ============================================================
        TRADUCCION GENERAL
        ============================================================ */
@@ -188,7 +193,7 @@ public class GeneradorMIPS {
      * Objetivo: Traducir "x = y".
      */
     private void copiar(String destino, String valor) {
-        if (datos.esFloat(destino)) {
+        if (esFloat(destino)) {
             cargarFloat(valor, "$f0");
             guardarFloat("$f0", destino);
         } else {
@@ -218,7 +223,7 @@ public class GeneradorMIPS {
      * Objetivo: Traducir "x = a op b".
      */
     private void operar(String destino, String izquierdo, String operador, String derecho) {
-        if (datos.esFloat(izquierdo) || datos.esFloat(derecho)) {
+        if (esFloat(izquierdo) || esFloat(derecho)) {
             operarFloat(destino, izquierdo, operador, derecho);
         } else {
             operarEnteros(destino, izquierdo, operador, derecho);
@@ -368,7 +373,53 @@ public class GeneradorMIPS {
         guardarFloat("$f4", destino);
     }
 
+        /* ============================================================
+       DONDE ESTA CADA NOMBRE Y DE QUE TIPO ES
+       ============================================================ */
 
+    /*
+     * Descripcion: Dice donde esta guardado un nombre.
+     * Entrada: Nombre de variable, parametro o temporal.
+     * Salida: Posicion en la pila (-8($fp)) o etiqueta en .data (var_x).
+     * Restricciones: Primero busca en la funcion actual y despues en las globales.
+     * Objetivo: Usar la pila dentro de funciones y .data para lo global.
+     */
+    private String ubicacion(String nombre) {
+
+        if (funcionActual != null && funcionActual.tiene(nombre)) {
+            return funcionActual.ubicacion(nombre);
+        }
+
+        datos.reservar(nombre);
+        return datos.nombreEnMemoria(nombre);
+    }
+
+    /*
+     * Descripcion: Dice el tipo de un valor.
+     * Entrada: Literal, variable, parametro o temporal.
+     * Salida: int, float, bool, char o string.
+     * Restricciones: Primero busca en la funcion actual.
+     * Objetivo: Elegir las instrucciones correctas para cada tipo.
+     */
+    private String tipoDe(String valor) {
+
+        if (funcionActual != null && funcionActual.tiene(valor)) {
+            return funcionActual.tipoDe(valor);
+        }
+
+        return datos.tipoDe(valor);
+    }
+
+    /*
+     * Descripcion: Dice si un valor es float.
+     * Entrada: Valor.
+     * Salida: true si es float.
+     * Restricciones: Ninguna.
+     * Objetivo: Saber cuando usar los registros $f.
+     */
+    private boolean esFloat(String valor) {
+        return tipoDe(valor).equals("float");
+    }
     /* ============================================================
        ESCRITURA Y FIN DEL PROGRAMA
        ============================================================ */
@@ -382,7 +433,7 @@ public class GeneradorMIPS {
      */
     private void escribir(String valor) {
 
-        switch (datos.tipoDe(valor)) {
+        switch (tipoDe(valor)) {
             case "float":
                 cargarFloat(valor, "$f12");
                 llamarSistema(SYSCALL_IMPRIMIR_FLOAT);
@@ -450,8 +501,7 @@ public class GeneradorMIPS {
         } else if (SeccionDatosMIPS.esNumeroEntero(valor)) {
             instruccion("li " + registro + ", " + valor);
         } else {
-            datos.reservar(valor);
-            instruccion("lw " + registro + ", " + datos.nombreEnMemoria(valor));
+            instruccion("lw " + registro + ", " + ubicacion(valor));
         }
     }
 
@@ -463,8 +513,7 @@ public class GeneradorMIPS {
      * Objetivo: Dejar el resultado en memoria.
      */
     private void guardarEntero(String registro, String destino) {
-        datos.reservar(destino);
-        instruccion("sw " + registro + ", " + datos.nombreEnMemoria(destino));
+        instruccion("sw " + registro + ", " + ubicacion(destino));
     }
 
     /*
@@ -478,13 +527,12 @@ public class GeneradorMIPS {
 
         if (SeccionDatosMIPS.esNumeroFloat(valor)) {
             instruccion("l.s " + registro + ", " + datos.etiquetaDeNumero(valor));
-        } else if (!datos.esFloat(valor)) {
+        } else if (!esFloat(valor)) {
             cargarEntero(valor, "$t3");
             instruccion("mtc1 $t3, " + registro);
             instruccion("cvt.s.w " + registro + ", " + registro);
         } else {
-            datos.reservar(valor);
-            instruccion("l.s " + registro + ", " + datos.nombreEnMemoria(valor));
+            instruccion("l.s " + registro + ", " + ubicacion(valor));
         }
     }
 
@@ -496,8 +544,7 @@ public class GeneradorMIPS {
      * Objetivo: Dejar el resultado con decimales en memoria.
      */
     private void guardarFloat(String registro, String destino) {
-        datos.reservar(destino);
-        instruccion("s.s " + registro + ", " + datos.nombreEnMemoria(destino));
+        instruccion("s.s " + registro + ", " + ubicacion(destino));
     }
 
     /*
