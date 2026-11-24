@@ -16,7 +16,7 @@
 | Heldyis Agüero Espinoza | 2023296812 |
 | Alice Arias Salazar | 2023104639 |
 
-**Profesor:** Allan Rodriguez Davila · **Proyecto #2** · **Entrega:** 9 de noviembre de 2026
+**Profesor:** Allan Rodriguez Davila · **Proyecto #3** · **Entrega:** 5 de diciembre de 2026
 
 </div>
 
