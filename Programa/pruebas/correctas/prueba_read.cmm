@@ -1,0 +1,23 @@
+void principal є:  :э ¿:
+    val int edad»
+    val float promedio»
+    val int edadEnMeses Ͱ 0 »
+
+    | ===== Lecturas =====
+    write є: "Ingrese su edad: " :э »
+    read є: edad :э »
+    write є: "Ingrese su promedio: " :э »
+    read є: promedio :э »
+
+    edadEnMeses Ͱ edad * 12 »
+
+
+    | ===== Escrituras =====
+    write є: "\nEdad ingresada: " :э »
+    write є: edad :э »
+    write є: "\nEdad en meses: " :э »
+    write є: edadEnMeses :э »
+    write є: "Promedio ingresado: " :э »
+    write є: promedio :э »
+
+:?
