@@ -15,8 +15,11 @@ public class GeneradorMIPS {
     private static final int SYSCALL_IMPRIMIR_ENTERO = 1;
     private static final int SYSCALL_IMPRIMIR_FLOAT = 2;
     private static final int SYSCALL_IMPRIMIR_TEXTO = 4;
+    private static final int SYSCALL_LEER_ENTERO = 5;
+    private static final int SYSCALL_LEER_FLOAT = 6;
     private static final int SYSCALL_TERMINAR = 10;
     private static final int SYSCALL_IMPRIMIR_CARACTER = 11;
+    private static final int SYSCALL_LEER_CHAR = 12;
 
     /* Codigo ASCII del cambio de linea */
     private static final int CAMBIO_DE_LINEA = 10;
@@ -178,6 +181,8 @@ public class GeneradorMIPS {
             retornar(linea.length() > "return".length() ? linea.substring("return ".length()).trim() : null);
         } else if (linea.startsWith("declaracion# ") || linea.startsWith("declaracionPrevia# ")) {
             traducirDeclaracion(linea);
+        } else if (linea.startsWith("read ")) {
+            leer(linea.substring("read ".length()).trim());
         } else if (linea.startsWith("write ")) {
             escribir(linea.substring("write ".length()).trim());
         } else if (linea.endsWith(":")) {
@@ -677,7 +682,7 @@ public class GeneradorMIPS {
 
 
     /* ============================================================
-       ESCRITURA Y FIN DEL PROGRAMA
+       ESCRITURA, LECTURA Y FIN DEL PROGRAMA
        ============================================================ */
 
     /*
@@ -698,10 +703,6 @@ public class GeneradorMIPS {
                 cargarEntero(valor, "$a0");
                 llamarSistema(SYSCALL_IMPRIMIR_TEXTO);
                 break;
-            case "char":
-                cargarEntero(valor, "$a0");
-                llamarSistema(SYSCALL_IMPRIMIR_CARACTER);
-                break;
             default:
                 cargarEntero(valor, "$a0");
                 llamarSistema(SYSCALL_IMPRIMIR_ENTERO);
@@ -709,6 +710,39 @@ public class GeneradorMIPS {
 
         instruccion("li $a0, " + CAMBIO_DE_LINEA);
         llamarSistema(SYSCALL_IMPRIMIR_CARACTER);
+    }
+
+    /*
+     * Descripcion: Imprime un valor y un cambio de linea.
+     * Entrada: El valor a imprimir.
+     * Salida: Instrucciones syscall.
+     * Restricciones: El servicio depende del tipo del valor.
+     * Objetivo: Traducir "write x".
+     */
+
+    private void leer(String destino) {
+        
+        switch (tipoDe(destino)) {
+            case "int":
+                //Va al revés que la escritura porque primero necesita preparar el registro 
+                llamarSistema(SYSCALL_LEER_ENTERO); 
+                guardarEntero("$v0", destino); //Aquí va a guardar la variable
+                break;
+            
+            case "float":
+                llamarSistema(SYSCALL_LEER_FLOAT);
+                guardarFloat("$f0", destino); //Se deja guardado directamente en $f0 sin moverlo
+                break;
+
+            case "char":
+                llamarSistema(SYSCALL_LEER_CHAR);
+                instruccion("move $t0, $v0"); //Añade la instrucción de move para terminar dejando el valor en $t0
+                guardarChar("$t0", destino);
+                break;
+        
+            default:
+                break;
+        }
     }
 
     /*
@@ -801,6 +835,17 @@ public class GeneradorMIPS {
      */
     private void guardarFloat(String registro, String destino) {
         instruccion("s.s " + registro + ", " + ubicacion(destino));
+    }
+
+    /*
+     * Descripcion: Guarda un registro $t en una variable char y la mueve al destino.
+     * Entrada: Registro y destino.
+     * Salida: Instruccion sb.
+     * Restricciones: Ninguna.
+     * Objetivo: Dejar el valor char en la variable.
+     */
+    private void guardarChar(String registro, String destino) {
+        instruccion("sb " + registro + ", " + ubicacion(destino));
     }
 
     /*
