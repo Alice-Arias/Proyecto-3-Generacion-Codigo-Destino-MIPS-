@@ -1,7 +1,9 @@
   Árbol de ámbitos
 
   global  (1 símbolo)
-  └── procedimiento principal  (3 símbolos)
+  └── procedimiento principal  (2 símbolos)
+      └── for  (1 símbolo)
+          └── cuerpo for  (0 símbolos)
 
   Categorías: variable  arreglo  parámetro  función  procedimiento
   Dirección:   global+n = zona estática                 ----   pila+n = registro de activación
@@ -13,7 +15,9 @@
   │ 1   │ principal          │ procedimiento │ void    │ global                   │ —     │ —          │ código      │ —                      │ público  │ 1     │ 6   │
   ├─────┼────────────────────┼───────────────┼─────────┼──────────────────────────┼───────┼────────────┼─────────────┼────────────────────────┼──────────┼───────┼─────┤
   │ 2   │ edad               │ variable      │ int     │ procedimiento principal  │ 4     │ —          │ pila+0      │ —                      │ privado  │ 2     │ 13  │
-  │ 3   │ promedio           │ variable      │ float   │ procedimiento principal  │ 4     │ —          │ pila+4      │ —                      │ privado  │ 3     │ 15  │
-  │ 4   │ edadEnMeses        │ variable      │ int     │ procedimiento principal  │ 4     │ —          │ pila+8      │ 0                      │ privado  │ 4     │ 13  │
+  │ 3   │ edades             │ arreglo       │ int     │ procedimiento principal  │ 20    │ [0..4]     │ pila+4      │ ¿: 0, 0, 0, 0, 0 :?    │ privado  │ 3     │ 13  │
+  ├─────┼────────────────────┼───────────────┼─────────┼──────────────────────────┼───────┼────────────┼─────────────┼────────────────────────┼──────────┼───────┼─────┤
+  │ 4   │ i                  │ variable      │ int     │ procedimiento principal  │ 4     │ —          │ pila+24     │ 0                      │ privado  │ 25    │ 20  │
+  │     │                    │               │         │ › for                    │       │            │             │                        │          │       │     │
   └─────┴────────────────────┴───────────────┴─────────┴──────────────────────────┴───────┴────────────┴─────────────┴────────────────────────┴──────────┴───────┴─────┘
 
