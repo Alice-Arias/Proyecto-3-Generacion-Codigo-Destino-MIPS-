@@ -1,23 +1,35 @@
 void principal є:  :э ¿:
     val int edad»
-    val float promedio»
-    val int edadEnMeses Ͱ 0 »
+    val int edadesʃ:5:ʅ Ͱ ¿:0, 0, 0, 0, 0:?»
 
     | ===== Lecturas =====
-    write є: "Ingrese su edad: " :э »
+    write є: "Ingrese la primera edad: " :э »
     read є: edad :э »
-    write є: "Ingrese su promedio: " :э »
-    read є: promedio :э »
+    edadesʃ:0:ʅ Ͱ edad »
+    write є: "Ingrese la segunda edad: " :э »
+    read є: edad :э »
+    edadesʃ:1:ʅ Ͱ edad »
+    write є: "Ingrese la tercera edad: " :э »
+    read є: edad :э »
+    edadesʃ:2:ʅ Ͱ edad »
+    write є: "Ingrese la cuarta edad: " :э »
+    read є: edad :э »
+    edadesʃ:3:ʅ Ͱ edad »
+    write є: "Ingrese la quinta edad: " :э »
+    read є: edad :э »
+    edadesʃ:4:ʅ Ͱ edad »
 
-    edadEnMeses Ͱ edad * 12 »
+    |val float pruebaFloat Ͱ 2.5 pot 2.0 + 2.7 »
+    |write є: pruebaFloat :э »
+
+    val int in1 Ͱ 1 - -14 mod 5 + 7 // 15 * -3050 pot 10//3» | semantico fl1, in1, semantico division
+    write є: in1 :э »
 
 
     | ===== Escrituras =====
-    write є: "\nEdad ingresada: " :э »
-    write є: edad :э »
-    write є: "\nEdad en meses: " :э »
-    write є: edadEnMeses :э »
-    write є: "Promedio ingresado: " :э »
-    write є: promedio :э »
+    write є: "\nEdades seleccionadas: " :э »
+    for є: val int i Ͱ 0 » ʃ:i:ʅ < ʃ:5:ʅ » i++ :э ¿:
+        write є: edadesʃ:i:ʅ :э »
+    :?
 
 :?
