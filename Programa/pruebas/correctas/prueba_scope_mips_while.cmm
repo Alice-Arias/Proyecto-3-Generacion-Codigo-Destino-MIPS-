@@ -1,0 +1,16 @@
+void principal є: :э ¿:
+    val int i Ͱ 0 »
+
+    while є: ʃ:i:ʅ < 2 :э ¿:
+        if є: ʃ:i:ʅ == 0 :э ¿:
+            val int x Ͱ 10 »
+            write є: x :э »
+        :?
+        else ¿:
+            val float x Ͱ 2.5 »
+            write є: x :э »
+        :?
+
+        i Ͱ i + 1 »
+    :?
+:?

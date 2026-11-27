@@ -18,6 +18,7 @@ public class Simbolo {
 
     // Información básica.
     public String nombre;
+    public String nombreCodigo;
     public String categoria;
 
     // Tipo y tamaño del símbolo.

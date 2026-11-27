@@ -84,6 +84,7 @@ public class TablaSimbolos {
     private String nombreProximoAmbito = "bloque";
     private Simbolo funcionPendiente = null;
     private final List<Simbolo> parametrosPendientes = new ArrayList<>();
+    private int siguienteNombreCodigo = 1;
 
     /**
      * Descripcion: Crea la tabla de símbolos.
@@ -210,6 +211,7 @@ public class TablaSimbolos {
             return existente;
         }
 
+        asignarNombreCodigo(simbolo);
         simbolo.ambito = ambitoActual;
         simbolo.acceso = ambitoActual.esGlobal() ? "público" : "privado";
 
@@ -220,6 +222,12 @@ public class TablaSimbolos {
 
         ambitoActual.agregar(simbolo);
         return null;
+    }
+
+    private void asignarNombreCodigo(Simbolo simbolo) {
+        if (!simbolo.esFuncion() && simbolo.nombreCodigo == null) {
+            simbolo.nombreCodigo = "v" + siguienteNombreCodigo++;
+        }
     }
 
     /**
@@ -307,6 +315,9 @@ public class TablaSimbolos {
 
         if (parametros != null) {
             funcion.parametros.addAll(parametros);
+            for (Simbolo parametro : parametros) {
+                asignarNombreCodigo(parametro);
+            }
             parametrosPendientes.addAll(parametros);
         }
 

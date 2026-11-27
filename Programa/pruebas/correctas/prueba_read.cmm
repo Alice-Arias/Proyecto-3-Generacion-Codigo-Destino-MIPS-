@@ -32,6 +32,7 @@ void principal є:  :э ¿:
         write є: "Funciona el not" :э »
     :?
 
+    val int in2 Ͱ -142 mod 52 »
 
     | ===== Escrituras =====
     write є: "\nEdades seleccionadas: " :э »
