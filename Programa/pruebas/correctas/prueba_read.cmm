@@ -1,6 +1,7 @@
 void principal є:  :э ¿:
     val int edad»
     val int edadesʃ:5:ʅ Ͱ ¿:0, 0, 0, 0, 0:?»
+    val int i Ͱ 1 »
 
     | ===== Lecturas =====
     write є: "Ingrese la primera edad: " :э »
@@ -22,7 +23,7 @@ void principal є:  :э ¿:
     |val float pruebaFloat Ͱ 2.5 pot 2.0 + 2.7 »
     |write є: pruebaFloat :э »
 
-    val int in1 Ͱ 1 - -14 mod 5 + 7 // 15 * -3050 pot 10//3» | semantico fl1, in1, semantico division
+    val int in1 Ͱ i++ - -14 mod 5 + 7 // 15 * -3050 pot 10//3» | semantico fl1, in1, semantico division
     write є: in1 :э »
 
 

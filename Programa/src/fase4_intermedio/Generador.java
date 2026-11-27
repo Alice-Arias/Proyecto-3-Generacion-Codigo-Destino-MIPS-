@@ -340,10 +340,10 @@ public class Generador {
     /*
      * Descripcion: Genera un aumento o disminucion de uno.
      * Entrada: Tipo de dato, variable y operador.
-     * Salida: Instrucciones para actualizar la variable.
+     * Salida: Instrucciones para actualizar la variable y su valor anterior.
      * Restricciones: Solo trabaja con ++ y --.
      */
-    public void incremento(String tipo, String id, String op) {
+    public String incremento(String tipo, String id, String op) {
         String valor = nuevoTemporal(tipo);
         emitir(valor + " = " + id);
 
@@ -351,6 +351,7 @@ public class Generador {
         emitir(resultado + " = " + valor + (op.equals("++") ? " + 1" : " - 1"));
 
         emitir(id + " = " + resultado);
+        return valor;
     }
 
     /* ---------- funciones ---------- */

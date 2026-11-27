@@ -957,17 +957,18 @@ parser code {:
      * Salida: Ninguna.
      * Restricciones: Solo con variables int o float.
      */
-    public void incrementar(Simbolo variable, String nombre, String operador, int linea, int columna) {
+    public Atrib incrementar(Simbolo variable, String nombre, String operador, int linea, int columna) {
 
         if (variable == null) {
-            return;
+            return new Atrib("error", nombre);
         }
 
         if (!esNumerico(variable.tipo)) {
             reportar("Incremento", linea, columna, "el operador '" + operador  + "' solo se aplica a variables int o float y '" + nombre + "' es de tipo " + variable.tipo);
-            return;
+            return new Atrib("error", nombre);
         }
-        gen.incremento(variable.tipo, nombre, operador);
+        String valorAnterior = gen.incremento(variable.tipo, nombre, operador);
+        return new Atrib(variable.tipo, valorAnterior);
     }
 
 
@@ -1197,7 +1198,7 @@ non terminal Atrib expresion_unaria;
 non terminal Atrib expresion_potencia;
 non terminal Atrib exponente;
 non terminal Atrib valor_aritmetico;
-non terminal operacion_incremento;
+non terminal Atrib operacion_incremento;
 
 /* Operaciones relacionales */
 non terminal String operadorRelacional;
@@ -1843,14 +1844,21 @@ valor_aritmetico ::= valor_numerico:numero   {: RESULT = parser.gen.cargar(numer
                 | PARENOP expresion_aritmetica:valor PARENCL  {: RESULT = valor; :} ;
 
 /*
+ * Descripcion: Un incremento o decremento usado como valor postfix.
+ * Entrada: Una variable seguida de ++ o --.
+ * Salida: El valor que tenia la variable antes de actualizarla.
+ */
+valor_aritmetico ::= operacion_incremento:valor {: RESULT = valor; :} ;
+
+/*
  * Descripcion: Sumar o restar uno a una variable.
  * Entrada: Nombre y ++ o --.
- * Salida: escribe las instrucciones.
+ * Salida: escribe las instrucciones y devuelve el valor anterior.
  * Restricciones: Solo int o float.
  */
-operacion_incremento ::= identificador:nombre incremento {: parser.incrementar(parser.usar(nombre, nombreleft, nombreright), nombre, "++", nombreleft, nombreright); :}
+operacion_incremento ::= identificador:nombre incremento {: RESULT = parser.incrementar(parser.usar(nombre, nombreleft, nombreright), nombre, "++", nombreleft, nombreright); :}
                         
-                        | identificador:nombre decremento {: parser.incrementar(parser.usar(nombre, nombreleft, nombreright), nombre, "--", nombreleft, nombreright); :} ;
+                        | identificador:nombre decremento {: RESULT = parser.incrementar(parser.usar(nombre, nombreleft, nombreright), nombre, "--", nombreleft, nombreright); :} ;
 
 
 /* ============================================================
@@ -2149,7 +2157,6 @@ condicion_for ::= operacion_relacional:comparacion                  {: RESULT = 
  * Restricciones: El valor debe ser del tipo de la variable.
  */
 incremento_for ::= /* vacio */
-                | operacion_incremento
                 | expresion_aritmetica
                 | identificador:nombre asignacion expresion:valor
                     {: Simbolo simbolo = parser.usar(nombre, nombreleft, nombreright);

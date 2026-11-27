@@ -11,73 +11,78 @@ edades[1] = int2
 edades[2] = int3
 edades[3] = int4
 edades[4] = int5
-string6 = "Ingrese la primera edad: "
-write string6
+declaracionPrevia# int i
+int6 = 1
+i = int6
+string7 = "Ingrese la primera edad: "
+write string7
 read edad
-int7 = edad
-edades[0] = int7
-string8 = "Ingrese la segunda edad: "
-write string8
+int8 = edad
+edades[0] = int8
+string9 = "Ingrese la segunda edad: "
+write string9
 read edad
-int9 = edad
-edades[1] = int9
-string10 = "Ingrese la tercera edad: "
-write string10
+int10 = edad
+edades[1] = int10
+string11 = "Ingrese la tercera edad: "
+write string11
 read edad
-int11 = edad
-edades[2] = int11
-string12 = "Ingrese la cuarta edad: "
-write string12
+int12 = edad
+edades[2] = int12
+string13 = "Ingrese la cuarta edad: "
+write string13
 read edad
-int13 = edad
-edades[3] = int13
-string14 = "Ingrese la quinta edad: "
-write string14
+int14 = edad
+edades[3] = int14
+string15 = "Ingrese la quinta edad: "
+write string15
 read edad
-int15 = edad
-edades[4] = int15
+int16 = edad
+edades[4] = int16
 declaracionPrevia# int in1
-int16 = 1
-int17 = -14
-int18 = int16 - int17
-int19 = 5
-int20 = 7
-int21 = int19 + int20
-int22 = 15
-int23 = int21 // int22
-int24 = 10
-int25 = -3050 pot int24
-int26 = int23 * int25
-int27 = 3
-int28 = int26 // int27
-int29 = int18 mod int28
-in1 = int29
-int30 = in1
-write int30
-string31 = "\nEdades seleccionadas: "
-write string31
+int17 = i
+int18 = int17 + 1
+i = int18
+int19 = -14
+int20 = int17 - int19
+int21 = 5
+int22 = 7
+int23 = int21 + int22
+int24 = 15
+int25 = int23 // int24
+int26 = 10
+int27 = -3050 pot int26
+int28 = int25 * int27
+int29 = 3
+int30 = int28 // int29
+int31 = int20 mod int30
+in1 = int31
+int32 = in1
+write int32
+string33 = "\nEdades seleccionadas: "
+write string33
 
 principal$for$1$inicializacion:
 declaracionPrevia# int i
-int32 = 0
-i = int32
+int34 = 0
+i = int34
 
 principal$for$1$condicion:
-int33 = i
-int34 = 5
-bool35 = int33 < int34
-if bool35 goto principal$for$1$bloque
+int35 = i
+int36 = 5
+bool37 = int35 < int36
+if bool37 goto principal$for$1$bloque
 goto principal$for$1$final
 
 principal$for$1$incremento:
-int36 = i
-int37 = int36 + 1
-i = int37
+int38 = i
+int39 = int38 + 1
+i = int39
 goto principal$for$1$condicion
 
 principal$for$1$bloque:
-int38 = edades[i]
-write int38
+int40 = edades[i]
+write int40
 goto principal$for$1$incremento
 
 principal$for$1$final:
