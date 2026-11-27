@@ -141,7 +141,7 @@ Cada error dice qué **validación** falló. Las 52 reglas, con ejemplos, están
 
 | Validación | Qué revisa |
 | :-- | :-- |
-|  **Nombres** | No repetir en un ámbito, declarar antes de usar, no usar una función como variable ni un arreglo sin índice |
+|  **Nombres** | No repetir ni ocultar nombres de ámbitos contenedores; declarar antes de usar, no usar una función como variable ni un arreglo sin índice |
 |  **Aritmética** | Solo `int` o `float`, sin mezclarlos; `//` con `int`, `/` con `float`, `pot` con exponente positivo |
 |  **Comparación** | Mismo tipo en los dos lados; los `string` no se comparan |
 |  **Lógica** | `λ`, `θ` y `Σ` solo con `bool` |

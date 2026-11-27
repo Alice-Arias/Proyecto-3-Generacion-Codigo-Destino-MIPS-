@@ -776,14 +776,14 @@ parser code {:
        ============================================================ */
 
     /*
-     * Descripcion: Avisa si un nombre ya existia en el mismo bloque.
+     * Descripcion: Avisa si un nombre ya existe en un ambito visible.
      * Entrada: Tipo de validacion, simbolo anterior, nombre y posicion.
      * Salida: Ninguna (si estaba repetido, guarda un error).
      * Restricciones: Ninguna.
      */
     private void avisarRepetido(String validacion, Simbolo simboloPrevio, String nombre, int linea, int columna) {
         if (simboloPrevio != null) {
-            reportar(validacion, linea, columna, "'" + nombre  + "' ya fue declarado en este ámbito (línea " + simboloPrevio.linea + ")");
+            reportar(validacion, linea, columna, "'" + nombre  + "' ya fue declarado en un ámbito visible (línea " + simboloPrevio.linea + ")");
         }
     }
 
@@ -791,22 +791,34 @@ parser code {:
      * Descripcion: Guarda una variable en la tabla de simbolos.
      * Entrada: Nombre, tipo, valor inicial y posicion.
      * Salida: Ninguna.
-     * Restricciones: Un nombre solo una vez por bloque.
+     * Restricciones: No permite ocultar nombres de ámbitos contenedores.
      */
     public void declararVariable(String nombre, String tipo, String valorInicial, int linea, int columna) {
-        Simbolo simboloPrevio = tabla.declararVariable(nombre, tipo, valorInicial, linea, columna);
-        avisarRepetido("Nombres", simboloPrevio, nombre, linea, columna);
+        Simbolo simboloPrevio = tabla.buscar(nombre);
+
+        if (simboloPrevio != null) {
+            avisarRepetido("Nombres", simboloPrevio, nombre, linea, columna);
+            return;
+        }
+
+        tabla.declararVariable(nombre, tipo, valorInicial, linea, columna);
     }
 
     /*
      * Descripcion: Guarda un arreglo en la tabla de simbolos.
      * Entrada: Nombre, tipo, tamano, cantidad de valores, valores y posicion.
      * Salida: Ninguna.
-     * Restricciones: Un nombre solo una vez por bloque.
+     * Restricciones: No permite ocultar nombres de ámbitos contenedores.
      */
     public void declararArreglo(String nombre, String tipo, String tamano, int elementos,  String valores, int linea, int columna) {
-        Simbolo simboloPrevio = tabla.declararArreglo(nombre, tipo, tamano, elementos, valores, linea, columna);
-        avisarRepetido("Nombres", simboloPrevio, nombre, linea, columna);
+        Simbolo simboloPrevio = tabla.buscar(nombre);
+
+        if (simboloPrevio != null) {
+            avisarRepetido("Nombres", simboloPrevio, nombre, linea, columna);
+            return;
+        }
+
+        tabla.declararArreglo(nombre, tipo, tamano, elementos, valores, linea, columna);
     }
 
     /*

@@ -166,5 +166,7 @@ principal.if.2.bloque1:
 principal.if.2.siguiente1:
 
 principal.if.2.final:
+    li $v0, 10                      # return
+    syscall
     li $v0, 10                      # void$principal$final
     syscall

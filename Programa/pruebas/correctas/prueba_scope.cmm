@@ -1,0 +1,109 @@
+ 
+val int numero» val bool valBool»
+val float numeroF Ͱ -0.01»
+float func1 є: char x22,char x23 :э  ¿: | semantico borrar parametro
+	val string sssͰ"Hola"»
+	val int g» val char letra»
+	g Ͱ numero + 10» | semantico inicializacion
+	numero Ͱ 10 * g // 11 » | semantico
+	numero Ͱ numero» | confirmacion de error negativo
+	letra Ͱ 'a'» | semantico asignacion tipo
+	letra Ͱ 'b'» | semantico no existente
+	write є: numero :э »
+	write є: -1.1 :э » | semantico tipo imprime
+	read є: g :э » | semantico tipo lee
+	val int numS Ͱ numero - 1 * numero + numero »
+	write є: numS :э »
+
+	val float ff Ͱ-0.01» 
+	val char x24Ͱ'a'» ¡ semantico x22 duplicado !
+	val char _miChar_Ͱ'!' »
+	val char _miChar2_Ͱ'!'» 
+	val int _x30_Ͱ-1»
+	val bool _x40_Ͱfalse»
+	val int _x50_ʃ:2:ʅ Ͱ ¿:4,5:?» | semantico tipo
+	val float _x502_ʃ:3:ʅ Ͱ ¿:5.5,6.4,7.2:?» | semantico, tamaño
+	val string _x53_Ͱ"Hola a todos los que estʃ:a:ʅ haciendo un compilador nuevo¿:n"»
+	_x30_ Ͱ _x30_»| semantico
+	
+	if є: є:ʃ:g:ʅ<=ʃ:45:ʅ:э λ є:ʃ:ff:ʅ>ʃ:5.6:ʅ:э :э  ¿:  | semantico x22, var cambiar por numeroF
+		val int y»
+		x22Ͱ'h'»
+		val char ch33Ͱ'a'»
+	 :?
+	else ¿: 
+		val int y» | semantico no error duplicado en if-else
+		val int numero» | semantico global
+		val string str2Ͱ"sdff"»
+
+		while є:_x40_:э  ¿: write є: g :э » numero Ͱ 33»  ff Ͱ-0.02 * -3.7»  :?  | semantico condicion
+	
+		if є: є:ʃ:_x40_:ʅ != ʃ:true:ʅ:э θ є:ʃ:ff:ʅ>ʃ:5.6:ʅ:э :э  ¿:  | semantico diferente logico
+			val int y »
+			numeroͰ10»
+			val char x22 Ͱ'a'» | semantico por jerarquia
+		:?
+		elif є: ʃ:4.5:ʅ < ʃ:numeroF:ʅ:э¿:
+			for є:val int numS Ͱ 0 » ʃ:numS:ʅ < ʃ:10:ʅ » numS++:э¿: | semantico numS ya existe
+				writeє:numS:э»
+			:?
+		:?
+
+	 :?
+	
+	write є: "Hola mundo" :э »
+
+	return -5.6»| cambio en retorno genera semantico
+	 read є: _x30_ :э » | semantico ?
+ :?  
+
+ bool _func2_  є: bool _b1_, int _i1_ :э   ¿: 
+	return true» | semantico generar error por ausencia, con -5.6 y con i1
+	val int j » 
+  :?  
+
+bool _func3_  є:  :э   ¿:  | semantico string
+	val bool _b1_»
+	return _b1_» 
+  :?
+
+bool _func5_  є: bool b1:э   ¿: 
+	val int j »
+	return true» 
+  :? 
+
+  bool _func6_  є: bool b1:э   ¿:  | semantico funcion repetida
+	val int j » 
+	if є: true :э  ¿:
+		val int y»
+		val char ch33Ͱ'a'»
+	 :?
+	return true»
+  :? 
+
+void principal є::э  ¿: 
+¡
+     omentario 1
+!
+	val char miCharͰ'!'»
+	val char miChar2Ͱ'!'» 
+	val string str1Ͱ"Mi string 1"»
+	val float fl1» val int gͰ566»
+	val float fl3Ͱ56.6» | semantico fl1
+	val int in1Ͱnumero - -14 mod g + 7 // 15 * -3050 + 10» | semantico fl1, in1, semantico division
+	val float fl2Ͱ3.7 pot fl1 + 1.0 + є: 45.6 mod 7.6 :э » | semantico literal 76, potencia
+	
+|comentario 2
+	val float arrʃ:2:ʅ Ͱ ¿:4.4,5.5:?»
+	arrʃ:67+in1:ʅ Ͱ 1.0 - arrʃ:67+in1:ʅ * func1  є: miChar, 'v' :э » | semantico func1, retorno func1, tipo arreglo
+	fl1 Ͱ 4.5 mod 1.2 pot 0.005» | semantico miChar
+	_func2_ є: _func5_ є: true :э , 1+1 :э » | semantico miFunc,  _func2_ (_func5_)
+	val bool bl0 Ͱ ʃ:6.7:ʅ != ʃ:8.9:ʅ» | ok
+	bl0 Ͱ ʃ:true:ʅ == ʃ:ʃ:5:ʅ > ʃ:4:ʅ:ʅ» | ok
+	val bool bl1 Ͱ є:ʃ:fl3:ʅ >= ʃ:fl1:ʅ:э θ є:Σ є: ʃ:func1 є:miChar, 'v':э:ʅ  > ʃ:5.6:ʅ :э:э » | semantico in1 >= fl1, func2
+
+ 	while є: є:ʃ:fl1:ʅ > ʃ:12.2:ʅ:э λ є:Σ є:ʃ:12:ʅ <= ʃ:34+35:ʅ :э:э  :э¿: | semantico arr
+        val int _i_»
+	:?
+ 
+ :? 

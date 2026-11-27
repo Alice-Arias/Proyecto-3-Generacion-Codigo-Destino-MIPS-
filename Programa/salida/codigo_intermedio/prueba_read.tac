@@ -63,25 +63,25 @@ string33 = "\nEdades seleccionadas: "
 write string33
 
 principal$for$1$inicializacion:
-declaracionPrevia# int i
+declaracionPrevia# int y
 int34 = 0
-i = int34
+y = int34
 
 principal$for$1$condicion:
-int35 = i
+int35 = y
 int36 = 5
 bool37 = int35 < int36
 if bool37 goto principal$for$1$bloque
 goto principal$for$1$final
 
 principal$for$1$incremento:
-int38 = i
+int38 = y
 int39 = int38 + 1
-i = int39
+y = int39
 goto principal$for$1$condicion
 
 principal$for$1$bloque:
-int40 = edades[i]
+int40 = edades[y]
 write int40
 goto principal$for$1$incremento
 

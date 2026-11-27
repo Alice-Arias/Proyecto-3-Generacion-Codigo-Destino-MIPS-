@@ -642,6 +642,17 @@ principal.for.4.final:
     sw $v0, -244($fp)
     lw $t0, -244($fp)               # resultadoBool = bool101
     sw $t0, -240($fp)
+    li $v0, 5                       # read var
+    syscall
+    sw $v0, -4($fp)
+    li $v0, 12                      # read c
+    syscall
+    move $t0, $v0
+    sb $t0, -208($fp)
+    li $v0, 5                       # read _arr_[0]
+    syscall
+    la $t9, var__arr_
+    sw $v0, 0($t9)
     lw $t0, -164($fp)               # int102 = s
     sw $t0, -248($fp)
     lw $a0, -248($fp)               # write int102

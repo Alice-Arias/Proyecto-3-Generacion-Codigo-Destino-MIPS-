@@ -1,50 +1,44 @@
 .data
-g_int1: .word 0
-g_a: .word 0
-g_int2: .word 0
-g_b: .word 0
-g_int3: .word 0
-g_int4: .word 0
 
 .text
 .globl main
 main:
-    # void$principal:
-    # declaracionPrevia# int a
-    # int1 = 5
-    li $t0, 5
-    sw $t0, g_int1
-    # a = int1
-    lw $t0, g_int1
-    sw $t0, g_a
-    # declaracionPrevia# int b
-    # int2 = 7
-    li $t0, 7
-    sw $t0, g_int2
-    # b = int2
-    lw $t0, g_int2
-    sw $t0, g_b
-    # int3 = a
-    lw $t0, g_a
-    sw $t0, g_int3
-    # write int3
-    lw $a0, g_int3
+    j void.principal                # inicio del programa: ir a principal
+
+# ============================================================
+# funcion void$principal
+# ============================================================
+void.principal:
+    addiu $sp, $sp, -8              # guardar $ra y $fp, y reservar las variables locales
+    sw $ra, 4($sp)
+    sw $fp, 0($sp)
+    move $fp, $sp
+    addiu $sp, $sp, -24
+    li $t0, 5                       # int1 = 5
+    sw $t0, -8($fp)
+    lw $t0, -8($fp)                 # a = int1
+    sw $t0, -4($fp)
+    li $t0, 7                       # int2 = 7
+    sw $t0, -16($fp)
+    lw $t0, -16($fp)                # b = int2
+    sw $t0, -12($fp)
+    lw $t0, -4($fp)                 # int3 = a
+    sw $t0, -20($fp)
+    lw $a0, -20($fp)                # write int3
     li $v0, 1
     syscall
     li $a0, 10
     li $v0, 11
     syscall
-    # int4 = b
-    lw $t0, g_b
-    sw $t0, g_int4
-    # write int4
-    lw $a0, g_int4
+    lw $t0, -12($fp)                # int4 = b
+    sw $t0, -24($fp)
+    lw $a0, -24($fp)                # write int4
     li $v0, 1
     syscall
     li $a0, 10
     li $v0, 11
     syscall
-    # return
-    # void$principal$final
-    li $v0, 10
+    li $v0, 10                      # return
+    syscall
+    li $v0, 10                      # void$principal$final
     syscall

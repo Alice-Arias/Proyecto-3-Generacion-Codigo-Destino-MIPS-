@@ -21,7 +21,7 @@ void.principal:
     sw $ra, 4($sp)
     sw $fp, 0($sp)
     move $fp, $sp
-    addiu $sp, $sp, -192
+    addiu $sp, $sp, -196
     sw $zero, -4($fp)               # declaracion# int edad
     li $t0, 0                       # int1 = 0
     sw $t0, -28($fp)
@@ -220,42 +220,42 @@ pot_fin_1:
 
 principal.for.1.inicializacion:
     li $t0, 0                       # int34 = 0
+    sw $t0, -172($fp)
+    lw $t0, -172($fp)               # y = int34
     sw $t0, -168($fp)
-    lw $t0, -168($fp)               # i = int34
-    sw $t0, -48($fp)
 
 principal.for.1.condicion:
-    lw $t0, -48($fp)                # int35 = i
-    sw $t0, -172($fp)
-    li $t0, 5                       # int36 = 5
+    lw $t0, -168($fp)               # int35 = y
     sw $t0, -176($fp)
-    lw $t0, -172($fp)               # bool37 = int35 < int36
-    lw $t1, -176($fp)
+    li $t0, 5                       # int36 = 5
+    sw $t0, -180($fp)
+    lw $t0, -176($fp)               # bool37 = int35 < int36
+    lw $t1, -180($fp)
     slt $t2, $t0, $t1
-    sw $t2, -180($fp)
-    lw $t0, -180($fp)               # if bool37 goto principal$for$1$bloque
+    sw $t2, -184($fp)
+    lw $t0, -184($fp)               # if bool37 goto principal$for$1$bloque
     bnez $t0, principal.for.1.bloque
     j principal.for.1.final         # goto principal$for$1$final
 
 principal.for.1.incremento:
-    lw $t0, -48($fp)                # int38 = i
-    sw $t0, -184($fp)
-    lw $t0, -184($fp)               # int39 = int38 + 1
+    lw $t0, -168($fp)               # int38 = y
+    sw $t0, -188($fp)
+    lw $t0, -188($fp)               # int39 = int38 + 1
     li $t1, 1
     add $t2, $t0, $t1
-    sw $t2, -188($fp)
-    lw $t0, -188($fp)               # i = int39
-    sw $t0, -48($fp)
+    sw $t2, -192($fp)
+    lw $t0, -192($fp)               # y = int39
+    sw $t0, -168($fp)
     j principal.for.1.condicion     # goto principal$for$1$condicion
 
 principal.for.1.bloque:
-    addiu $t9, $fp, -24             # int40 = edades[i]
-    lw $t8, -48($fp)
+    addiu $t9, $fp, -24             # int40 = edades[y]
+    lw $t8, -168($fp)
     sll $t8, $t8, 2
     addu $t9, $t9, $t8
     lw $t0, 0($t9)
-    sw $t0, -192($fp)
-    lw $a0, -192($fp)               # write int40
+    sw $t0, -196($fp)
+    lw $a0, -196($fp)               # write int40
     li $v0, 1
     syscall
     li $a0, 10
