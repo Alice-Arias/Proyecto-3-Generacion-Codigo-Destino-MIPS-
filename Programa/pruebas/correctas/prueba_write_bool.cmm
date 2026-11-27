@@ -1,0 +1,9 @@
+void principal є: :э ¿:
+    val bool activo Ͱ true »
+    val bool terminado Ͱ false »
+
+    write є: activo :э »
+    write є: terminado :э »
+    write є: true :э »
+    write є: false :э »
+:?

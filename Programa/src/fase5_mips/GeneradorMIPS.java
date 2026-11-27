@@ -666,6 +666,9 @@ public class GeneradorMIPS {
                 cargarFloat(valor, "$f12");
                 llamarSistema(SYSCALL_IMPRIMIR_FLOAT);
                 break;
+            case "bool":
+                escribirBooleano(valor);
+                break;
             case "string":
                 cargarEntero(valor, "$a0");
                 llamarSistema(SYSCALL_IMPRIMIR_TEXTO);
@@ -677,6 +680,30 @@ public class GeneradorMIPS {
 
         instruccion("li $a0, " + CAMBIO_DE_LINEA);
         llamarSistema(SYSCALL_IMPRIMIR_CARACTER);
+    }
+
+    /*
+     * Descripcion: Imprime un valor booleano y un cambio de linea.
+     * Entrada: El valor a imprimir.
+     * Salida: Instrucciones syscall.
+     * Restricciones: El servicio depende del tipo bool.
+     * Objetivo: Traducir "write x".
+     */
+    private void escribirBooleano(String valor) {
+        int numero = numeroNuevo();
+        String etiquetaFalso = "write_bool_false_" + numero;
+        String etiquetaFin = "write_bool_end_" + numero;
+
+        cargarEntero(valor, "$t0");
+        instruccion("beq $t0, $zero, " + etiquetaFalso);
+        cargarEntero("\"true\"", "$a0");
+        llamarSistema(SYSCALL_IMPRIMIR_TEXTO);
+        instruccion("j " + etiquetaFin);
+
+        ponerEtiqueta(etiquetaFalso);
+        cargarEntero("\"false\"", "$a0");
+        llamarSistema(SYSCALL_IMPRIMIR_TEXTO);
+        ponerEtiqueta(etiquetaFin);
     }
 
     /*

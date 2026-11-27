@@ -1,0 +1,18 @@
+  Árbol de ámbitos
+
+  global  (1 símbolo)
+  └── procedimiento principal  (2 símbolos)
+
+  Categorías: variable  arreglo  parámetro  función  procedimiento
+  Dirección:   global+n = zona estática                 ----   pila+n = registro de activación
+  Acceso:      público = declarado en el ámbito global ------- privado = dentro de una función o bloque
+
+  ┌─────┬────────────────────┬───────────────┬─────────┬──────────────────────────┬───────┬────────────┬─────────────┬────────────────────────┬──────────┬───────┬─────┐
+  │ Nº  │ NOMBRE             │ CATEGORÍA     │ TIPO    │ ÁMBITO                   │ BYTES │ DIMENSIÓN  │ DIRECCIÓN   │ VALOR INICIAL          │ ACCESO   │ LÍNEA │ COL │
+  ├─────┼────────────────────┼───────────────┼─────────┼──────────────────────────┼───────┼────────────┼─────────────┼────────────────────────┼──────────┼───────┼─────┤
+  │ 1   │ principal          │ procedimiento │ void    │ global                   │ —     │ —          │ código      │ —                      │ público  │ 1     │ 6   │
+  ├─────┼────────────────────┼───────────────┼─────────┼──────────────────────────┼───────┼────────────┼─────────────┼────────────────────────┼──────────┼───────┼─────┤
+  │ 2   │ activo             │ variable      │ bool    │ procedimiento principal  │ 1     │ —          │ pila+0      │ true                   │ privado  │ 2     │ 14  │
+  │ 3   │ terminado          │ variable      │ bool    │ procedimiento principal  │ 1     │ —          │ pila+1      │ false                  │ privado  │ 3     │ 14  │
+  └─────┴────────────────────┴───────────────┴─────────┴──────────────────────────┴───────┴────────────┴─────────────┴────────────────────────┴──────────┴───────┴─────┘
+

@@ -2554,7 +2554,7 @@ public class parser extends java_cup.runtime.lr_parser {
      * Descripcion: Revisa un write y escribe su instruccion.
      * Entrada: Valor y posicion.
      * Salida: Ninguna.
-     * Restricciones: Solo int, float o string.
+     * Restricciones: Solo int, float, bool o string.
      */
     public void escribir(Atrib valor, int linea, int columna) {
 
@@ -2562,9 +2562,9 @@ public class parser extends java_cup.runtime.lr_parser {
             return;
         }
 
-        boolean tipoPermitido = esNumerico(valor.tipo) || valor.tipo.equals("string");
+        boolean tipoPermitido = esNumerico(valor.tipo) || valor.tipo.equals("bool") || valor.tipo.equals("string");
         if (!tipoPermitido) {
-            reportar("Entrada/Salida", linea, columna, "write no permite valores de tipo " + valor.tipo);
+            reportar("Entrada/Salida", linea, columna, "write solo permite valores de tipo int, float, bool o string; se recibió " + valor.tipo);
             return;
         }
         gen.escribir(valor.lugar);
