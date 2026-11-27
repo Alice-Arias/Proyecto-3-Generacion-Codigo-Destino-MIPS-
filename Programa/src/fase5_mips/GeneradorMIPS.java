@@ -359,11 +359,6 @@ public class GeneradorMIPS {
      */
     private void operarFloat(String destino, String izquierdo, String operador, String derecho) {
 
-        if (operador.equals("pot")) {
-            potenciaFloat(destino, izquierdo, derecho);
-            return;
-        }
-
         cargarFloat(izquierdo, "$f0");
         cargarFloat(derecho, "$f2");
 
@@ -432,34 +427,6 @@ public class GeneradorMIPS {
         ponerEtiqueta(fin);
         guardarEntero("$t2", destino);
     }
-
-    /*
-     * Descripcion: Calcula una potencia con base float usando un ciclo.
-     * Entrada: Destino, base y exponente entero.
-     * Salida: Instrucciones MIPS con un ciclo.
-     * Restricciones: Si el exponente es 0 o negativo, da 1.0.
-     * Objetivo: Traducir "x = a pot b" con decimales.
-     */
-    private void potenciaFloat(String destino, String base, String exponente) {
-
-        int numero = numeroNuevo();
-        String ciclo = "pot_ciclo_" + numero;
-        String fin = "pot_fin_" + numero;
-
-        cargarFloat(base, "$f0");
-        cargarEntero(exponente, "$t1");
-        cargarFloat("1.0", "$f4");
-
-        ponerEtiqueta(ciclo);
-        instruccion("blez $t1, " + fin);
-        instruccion("mul.s $f4, $f4, $f0");
-        instruccion("addi $t1, $t1, -1");
-        instruccion("j " + ciclo);
-
-        ponerEtiqueta(fin);
-        guardarFloat("$f4", destino);
-    }
-
 
     /* ============================================================
        FUNCIONES: ENTRAR, SALIR, LLAMAR Y RETORNAR
