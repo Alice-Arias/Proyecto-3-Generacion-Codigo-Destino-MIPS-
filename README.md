@@ -1,7 +1,7 @@
 <div align="center">
 
 #  Compilador `.cmm`
-### Análisis Semántico y Generación de Código Intermedio
+### Traducción de intermedio a ensamblador MIPS
 
 **Instituto Tecnológico de Costa Rica** · Compiladores e Intérpretes (IC-5701) · II Semestre 2026
 
