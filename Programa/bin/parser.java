@@ -1744,11 +1744,18 @@ public class parser extends java_cup.runtime.lr_parser {
             return new Atrib("error", "?");
         }
 
-        /*  la potencia solo acepta exponente positivo */
-        boolean exponenteNegativo = derecha.lugar.startsWith("-") || (derecha.valor != null && derecha.valor < 0);
-        if (operador.equals("pot") && exponenteNegativo) {
-            reportar("Aritmética", linea, columna, "el operador 'pot' requiere un exponente positivo");
-            return new Atrib("error", "?");
+        /*  la potencia solo acepta exponente positivo y trabaja solo con enteros */
+        if (operador.equals("pot")) {
+            if (!tipoIzquierda.equals("int") || !tipoDerecha.equals("int")) {
+                reportar("Aritmética", linea, columna, "el operador 'pot' requiere operandos int");
+                return new Atrib("error", "?");
+            }
+
+            boolean exponenteNegativo = derecha.lugar.startsWith("-") || (derecha.valor != null && derecha.valor < 0);
+            if (exponenteNegativo) {
+                reportar("Aritmética", linea, columna, "el operador 'pot' requiere un exponente no negativo");
+                return new Atrib("error", "?");
+            }
         }
 
         /*  el resultado tiene el tipo de los operandos.

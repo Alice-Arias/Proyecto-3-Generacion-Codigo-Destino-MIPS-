@@ -277,7 +277,7 @@ LINEA    COLUMNA  TOKEN              LEXEMA
 42       4        VAL                val
 42       8        INT                int
 42       12       ID                 y
-42       13       TERMINATOR         »
+42       14       TERMINATOR         »
 43       4        ID                 numero
 43       10       ASIGN              Ͱ
 43       11       LITERAL_INT        10
