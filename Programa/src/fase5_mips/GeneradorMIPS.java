@@ -812,7 +812,7 @@ public class GeneradorMIPS {
      * Objetivo: Dejar el valor char en la variable.
      */
     private void guardarChar(String registro, String destino) {
-        instruccion("sb " + registro + ", " + ubicacion(destino));
+        instruccion("sw " + registro + ", " + ubicacion(destino));
     }
 
     /*
