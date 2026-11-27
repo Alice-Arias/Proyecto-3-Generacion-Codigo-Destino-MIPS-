@@ -2,6 +2,8 @@ void principal є:  :э ¿:
     val int edad»
     val int edadesʃ:5:ʅ Ͱ ¿:0, 0, 0, 0, 0:?»
     val int i Ͱ 1 »
+    val int a Ͱ 5 »
+    val int b Ͱ 2 »
 
     | ===== Lecturas =====
     write є: "Ingrese la primera edad: " :э »
@@ -25,6 +27,10 @@ void principal є:  :э ¿:
 
     val int in1 Ͱ i++ - -14 mod 5 + 7 // 15 * -3050 pot 10//3» | semantico fl1, in1, semantico division
     write є: in1 :э »
+
+    if Σ є: ʃ:a:ʅ < ʃ:b:ʅ :э ¿:
+        write є: "Funciona el not" :э »
+    :?
 
 
     | ===== Escrituras =====
