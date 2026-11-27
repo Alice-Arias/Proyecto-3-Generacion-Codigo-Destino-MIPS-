@@ -228,13 +228,13 @@ parser code {:
             return new Atrib("error", "?");
         }
 
-        /*  la potencia solo acepta exponente positivo y trabaja solo con enteros */
+        /*  La potencia trabaja solo con enteros */
         if (operador.equals("pot")) {
             if (!tipoIzquierda.equals("int") || !tipoDerecha.equals("int")) {
                 reportar("Aritmética", linea, columna, "el operador 'pot' requiere operandos int");
                 return new Atrib("error", "?");
             }
-
+            /* El exponente solo puede ser positivo */
             boolean exponenteNegativo = derecha.lugar.startsWith("-") || (derecha.valor != null && derecha.valor < 0);
             if (exponenteNegativo) {
                 reportar("Aritmética", linea, columna, "el operador 'pot' requiere un exponente no negativo");
