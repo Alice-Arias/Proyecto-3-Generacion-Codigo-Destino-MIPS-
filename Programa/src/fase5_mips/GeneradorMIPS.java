@@ -680,11 +680,11 @@ public class GeneradorMIPS {
     }
 
     /*
-     * Descripcion: Imprime un valor y un cambio de linea.
-     * Entrada: El valor a imprimir.
+     * Descripcion: Lee un valor y un cambio de linea.
+     * Entrada: El valor a leer.
      * Salida: Instrucciones syscall.
      * Restricciones: El servicio depende del tipo del valor.
-     * Objetivo: Traducir "write x".
+     * Objetivo: Traducir "read x".
      */
 
     private void leer(String destino) {
