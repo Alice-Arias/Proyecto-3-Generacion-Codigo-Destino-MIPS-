@@ -21,7 +21,7 @@ void.principal:
     sw $ra, 4($sp)
     sw $fp, 0($sp)
     move $fp, $sp
-    addiu $sp, $sp, -120
+    addiu $sp, $sp, -184
     sw $zero, -4($fp)               # declaracion# int edad
     li $t0, 0                       # int1 = 0
     sw $t0, -28($fp)
@@ -136,9 +136,72 @@ void.principal:
     addiu $t9, $fp, -24
     addiu $t9, $t9, 16
     sw $t0, 0($t9)
-    la $t0, txt_6                   # string16 = "\nEdades seleccionadas: "
+    li $t0, 1                       # int16 = 1
+    sw $t0, -92($fp)
+    li $t0, -14                     # int17 = -14
+    sw $t0, -96($fp)
+    lw $t0, -92($fp)                # int18 = int16 - int17
+    lw $t1, -96($fp)
+    sub $t2, $t0, $t1
+    sw $t2, -100($fp)
+    li $t0, 5                       # int19 = 5
+    sw $t0, -104($fp)
+    li $t0, 7                       # int20 = 7
+    sw $t0, -108($fp)
+    lw $t0, -104($fp)               # int21 = int19 + int20
+    lw $t1, -108($fp)
+    add $t2, $t0, $t1
+    sw $t2, -112($fp)
+    li $t0, 15                      # int22 = 15
+    sw $t0, -116($fp)
+    lw $t0, -112($fp)               # int23 = int21 // int22
+    lw $t1, -116($fp)
+    div $t0, $t1
+    mflo $t2
+    sw $t2, -120($fp)
+    li $t0, 10                      # int24 = 10
+    sw $t0, -124($fp)
+    li $t0, -3050                   # int25 = -3050 pot int24
+    lw $t1, -124($fp)
+    li $t2, 1
+
+pot_ciclo_1:
+    blez $t1, pot_fin_1
+    mul $t2, $t2, $t0
+    addi $t1, $t1, -1
+    j pot_ciclo_1
+
+pot_fin_1:
+    sw $t2, -128($fp)
+    lw $t0, -120($fp)               # int26 = int23 * int25
+    lw $t1, -128($fp)
+    mul $t2, $t0, $t1
+    sw $t2, -132($fp)
+    li $t0, 3                       # int27 = 3
+    sw $t0, -136($fp)
+    lw $t0, -132($fp)               # int28 = int26 // int27
+    lw $t1, -136($fp)
+    div $t0, $t1
+    mflo $t2
+    sw $t2, -140($fp)
+    lw $t0, -100($fp)               # int29 = int18 mod int28
+    lw $t1, -140($fp)
+    div $t0, $t1
+    mfhi $t2
+    sw $t2, -144($fp)
+    lw $t0, -144($fp)               # in1 = int29
     sw $t0, -88($fp)
-    lw $a0, -88($fp)                # write string16
+    lw $t0, -88($fp)                # int30 = in1
+    sw $t0, -148($fp)
+    lw $a0, -148($fp)               # write int30
+    li $v0, 1
+    syscall
+    li $a0, 10
+    li $v0, 11
+    syscall
+    la $t0, txt_6                   # string31 = "\nEdades seleccionadas: "
+    sw $t0, -152($fp)
+    lw $a0, -152($fp)               # write string31
     li $v0, 4
     syscall
     li $a0, 10
@@ -146,43 +209,43 @@ void.principal:
     syscall
 
 principal.for.1.inicializacion:
-    li $t0, 0                       # int17 = 0
-    sw $t0, -96($fp)
-    lw $t0, -96($fp)                # i = int17
-    sw $t0, -92($fp)
+    li $t0, 0                       # int32 = 0
+    sw $t0, -160($fp)
+    lw $t0, -160($fp)               # i = int32
+    sw $t0, -156($fp)
 
 principal.for.1.condicion:
-    lw $t0, -92($fp)                # int18 = i
-    sw $t0, -100($fp)
-    li $t0, 5                       # int19 = 5
-    sw $t0, -104($fp)
-    lw $t0, -100($fp)               # bool20 = int18 < int19
-    lw $t1, -104($fp)
+    lw $t0, -156($fp)               # int33 = i
+    sw $t0, -164($fp)
+    li $t0, 5                       # int34 = 5
+    sw $t0, -168($fp)
+    lw $t0, -164($fp)               # bool35 = int33 < int34
+    lw $t1, -168($fp)
     slt $t2, $t0, $t1
-    sw $t2, -108($fp)
-    lw $t0, -108($fp)               # if bool20 goto principal$for$1$bloque
+    sw $t2, -172($fp)
+    lw $t0, -172($fp)               # if bool35 goto principal$for$1$bloque
     bnez $t0, principal.for.1.bloque
     j principal.for.1.final         # goto principal$for$1$final
 
 principal.for.1.incremento:
-    lw $t0, -92($fp)                # int21 = i
-    sw $t0, -112($fp)
-    lw $t0, -112($fp)               # int22 = int21 + 1
+    lw $t0, -156($fp)               # int36 = i
+    sw $t0, -176($fp)
+    lw $t0, -176($fp)               # int37 = int36 + 1
     li $t1, 1
     add $t2, $t0, $t1
-    sw $t2, -116($fp)
-    lw $t0, -116($fp)               # i = int22
-    sw $t0, -92($fp)
+    sw $t2, -180($fp)
+    lw $t0, -180($fp)               # i = int37
+    sw $t0, -156($fp)
     j principal.for.1.condicion     # goto principal$for$1$condicion
 
 principal.for.1.bloque:
-    addiu $t9, $fp, -24             # int23 = edades[i]
-    lw $t8, -92($fp)
+    addiu $t9, $fp, -24             # int38 = edades[i]
+    lw $t8, -156($fp)
     sll $t8, $t8, 2
     addu $t9, $t9, $t8
     lw $t0, 0($t9)
-    sw $t0, -120($fp)
-    lw $a0, -120($fp)               # write int23
+    sw $t0, -184($fp)
+    lw $a0, -184($fp)               # write int38
     li $v0, 1
     syscall
     li $a0, 10

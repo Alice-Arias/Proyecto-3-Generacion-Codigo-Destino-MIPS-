@@ -1796,10 +1796,21 @@ expresion_unaria ::= MINUS valor_numerico:numero  {: RESULT = parser.gen.cargar(
  * Salida: Dato con el temporal del resultado.
  * Restricciones: El exponente puede ser negativo solo para avisar el error.
  */
-expresion_potencia ::= valor_aritmetico:valor  {: RESULT = valor; :}
+expresion_potencia ::= valor_aritmetico:valor
+                         {: RESULT = valor; :}
 
-                    | valor_aritmetico:izquierda operadorPotencia:simboloPot exponente:derecha {: RESULT = parser.generarAritmetica(izquierda, "pot", derecha, simboloPotleft, simboloPotright); :} ;
+                    | valor_aritmetico:izquierda
+                       operadorPotencia:simboloPot exponente:derecha
+                         {: RESULT = parser.generarAritmetica(
+                                izquierda, "pot", derecha,
+                                simboloPotleft, simboloPotright); :}
 
+                    | MINUS valor_numerico:izquierda
+                       operadorPotencia:simboloPot exponente:derecha
+                         {: RESULT = parser.generarAritmetica(
+                                parser.negativo(izquierda), "pot", derecha,
+                                simboloPotleft, simboloPotright); :}
+                     ;
 exponente ::= valor_aritmetico:valor   {: RESULT = valor; :}
             | MINUS valor_numerico:numero    {: RESULT = parser.negativo(numero); :} ;
 

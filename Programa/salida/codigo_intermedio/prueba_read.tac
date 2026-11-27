@@ -36,30 +36,48 @@ write string14
 read edad
 int15 = edad
 edades[4] = int15
-string16 = "\nEdades seleccionadas: "
-write string16
+declaracionPrevia# int in1
+int16 = 1
+int17 = -14
+int18 = int16 - int17
+int19 = 5
+int20 = 7
+int21 = int19 + int20
+int22 = 15
+int23 = int21 // int22
+int24 = 10
+int25 = -3050 pot int24
+int26 = int23 * int25
+int27 = 3
+int28 = int26 // int27
+int29 = int18 mod int28
+in1 = int29
+int30 = in1
+write int30
+string31 = "\nEdades seleccionadas: "
+write string31
 
 principal$for$1$inicializacion:
 declaracionPrevia# int i
-int17 = 0
-i = int17
+int32 = 0
+i = int32
 
 principal$for$1$condicion:
-int18 = i
-int19 = 5
-bool20 = int18 < int19
-if bool20 goto principal$for$1$bloque
+int33 = i
+int34 = 5
+bool35 = int33 < int34
+if bool35 goto principal$for$1$bloque
 goto principal$for$1$final
 
 principal$for$1$incremento:
-int21 = i
-int22 = int21 + 1
-i = int22
+int36 = i
+int37 = int36 + 1
+i = int37
 goto principal$for$1$condicion
 
 principal$for$1$bloque:
-int23 = edades[i]
-write int23
+int38 = edades[i]
+write int38
 goto principal$for$1$incremento
 
 principal$for$1$final:

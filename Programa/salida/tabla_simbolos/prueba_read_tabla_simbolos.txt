@@ -1,7 +1,7 @@
   Árbol de ámbitos
 
   global  (1 símbolo)
-  └── procedimiento principal  (2 símbolos)
+  └── procedimiento principal  (3 símbolos)
       └── for  (1 símbolo)
           └── cuerpo for  (0 símbolos)
 
@@ -16,8 +16,10 @@
   ├─────┼────────────────────┼───────────────┼─────────┼──────────────────────────┼───────┼────────────┼─────────────┼────────────────────────┼──────────┼───────┼─────┤
   │ 2   │ edad               │ variable      │ int     │ procedimiento principal  │ 4     │ —          │ pila+0      │ —                      │ privado  │ 2     │ 13  │
   │ 3   │ edades             │ arreglo       │ int     │ procedimiento principal  │ 20    │ [0..4]     │ pila+4      │ ¿: 0, 0, 0, 0, 0 :?    │ privado  │ 3     │ 13  │
+  │ 4   │ in1                │ variable      │ int     │ procedimiento principal  │ 4     │ —          │ pila+24     │ 1 - -14 mod 5 + 7 //   │ privado  │ 25    │ 13  │
+  │     │                    │               │         │                          │       │            │             │ 15 * -3050 pot 10 // 3 │          │       │     │
   ├─────┼────────────────────┼───────────────┼─────────┼──────────────────────────┼───────┼────────────┼─────────────┼────────────────────────┼──────────┼───────┼─────┤
-  │ 4   │ i                  │ variable      │ int     │ procedimiento principal  │ 4     │ —          │ pila+24     │ 0                      │ privado  │ 25    │ 20  │
+  │ 5   │ i                  │ variable      │ int     │ procedimiento principal  │ 4     │ —          │ pila+28     │ 0                      │ privado  │ 31    │ 20  │
   │     │                    │               │         │ › for                    │       │            │             │                        │          │       │     │
   └─────┴────────────────────┴───────────────┴─────────┴──────────────────────────┴───────┴────────────┴─────────────┴────────────────────────┴──────────┴───────┴─────┘
 
