@@ -1,5 +1,25 @@
 <div align="center">
 
+#  Compilador `.cmm`
+### Traducción de intermedio a ensamblador MIPS
+
+**Instituto Tecnológico de Costa Rica** · Compiladores e Intérpretes (IC-5701) · II Semestre 2026
+
+![Java](https://img.shields.io/badge/Java-21-E76F00?style=for-the-badge&logo=openjdk&logoColor=white)
+![JFlex](https://img.shields.io/badge/JFlex-1.9.1-4C9A2A?style=for-the-badge)
+![CUP](https://img.shields.io/badge/Java_CUP-11b-1F6FEB?style=for-the-badge)
+![Conflictos](https://img.shields.io/badge/CUP-0_conflictos-2EA043?style=for-the-badge)
+![Estado](https://img.shields.io/badge/Estado-completo-8957E5?style=for-the-badge)
+
+| Estudiante | Carné |
+| :-- | :--: |
+| Heldyis Agüero Espinoza | 2023296812 |
+| Alice Arias Salazar | 2023104639 |
+
+**Profesor:** Allan Rodriguez Davila · **Proyecto #3** · **Entrega:** 5 de diciembre de 2026
+
+</div>
+
 ---
 
 ## ¿Qué hace?
