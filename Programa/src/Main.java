@@ -2,11 +2,13 @@ import java.io.File;
 import java.io.FileDescriptor;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.List;
 
 /*
- * Descripcion: Programa principal del compilador: ejecuta las cinco fases en orden.
- * Entrada: El archivo .cmm a analizar y, si se quiere, el archivo de tokens.
+ * Descripcion: Coordina la compilacion .cmm o la traduccion directa de archivos .tac.
+ * Entrada: Archivo .cmm, archivo de tokens opcional o modo --tac.
  * Salida: Resultados en consola y archivos en la carpeta salida.
  * Restricciones: El archivo .cmm debe estar en UTF-8.
  * Objetivo: Coordinar las fases sin hacer el trabajo de cada una.
@@ -14,8 +16,8 @@ import java.util.List;
 public class Main {
 
     /*
-     * Descripcion: Ejecuta el compilador completo.
-     * Entrada: Archivo .cmm y, opcional, archivo de tokens.
+     * Descripcion: Ejecuta la compilacion completa o la traduccion directa de TAC.
+     * Entrada: Archivo .cmm y archivo de tokens opcional, o --tac <archivo.tac>.
      * Salida: Resultados en consola y archivos en salida.
      * Restricciones: Si no recibe archivo, muestra como usarlo.
      * Objetivo: Ser el punto de entrada del compilador.
@@ -30,7 +32,17 @@ public class Main {
             Consola.mostrarTitulo("ANALIZADOR · USO");
             System.out.println();
             System.out.println("  java Main <archivo_fuente> [archivo_tokens]");
+            System.out.println("  java Main --tac <archivo.tac>");
             System.out.println();
+            return;
+        }
+
+        if ("--tac".equals(args[0])) {
+            if (args.length != 2) {
+                throw new IllegalArgumentException("Uso: java Main --tac <archivo.tac>");
+            }
+
+            traducirArchivoTAC(new File(args[1]));
             return;
         }
 
@@ -70,6 +82,36 @@ public class Main {
         ofrecerTablaSimbolos(tabla, reporte);
 
         System.out.println();
+    }
+
+    /*
+     * Descripcion: Traduce un archivo TAC existente sin ejecutar el frontend.
+     * Entrada: Archivo .tac.
+     * Salida: Archivo .asm dentro de salida/mips.
+     * Restricciones: El archivo debe existir y tener extension .tac.
+     * Objetivo: Permitir ejecutar directamente la Fase 5.
+     */
+    private static void traducirArchivoTAC(File archivoTAC) throws Exception {
+
+        if (!archivoTAC.isFile() || !archivoTAC.getName().toLowerCase().endsWith(".tac")) {
+            throw new IllegalArgumentException("El archivo TAC no existe o no tiene extensión .tac: "
+                    + archivoTAC.getPath());
+        }
+
+        long inicio = System.nanoTime();
+        String codigoIntermedio = Files.readString(archivoTAC.toPath(), StandardCharsets.UTF_8);
+
+        Consola.mostrarTitulo("TRADUCCIÓN DIRECTA · TAC A MIPS");
+        Consola.mostrarDato("Archivo TAC", Archivos.rutaCorta(archivoTAC));
+
+        String codigoMips = new GeneradorMIPS().traducir(codigoIntermedio);
+        String nombreAsm = Archivos.nombreSinExtension(archivoTAC) + ".asm";
+        File archivoAsm = Archivos.guardarEnSalida("mips", nombreAsm, codigoMips);
+
+        Consola.mostrarDato("Archivo MIPS", archivoAsm.getName());
+        Consola.mostrarDato("Carpeta", Archivos.carpetaCorta(archivoAsm));
+        Consola.mostrarDato("Tiempo de traducción", tiempoTranscurrido(inicio));
+        Consola.mostrarEstado(true, "Código MIPS generado directamente desde TAC.");
     }
 
     /*

@@ -31,6 +31,26 @@ set "BIN=%PROJECT%\bin"
 
 set "PRUEBAS=%PROJECT%\pruebas"
 
+REM ============================================================
+REM SELECCIONAR MODO
+REM ============================================================
+echo.
+echo   ¿Qué desea hacer?
+echo.
+echo     1. Compilar un archivo .cmm
+echo     2. Traducir un archivo .tac a MIPS
+echo.
+set /p "MODO=  Seleccione una opción: "
+
+if "%MODO%"=="2" goto TRADUCIR_TAC
+
+if not "%MODO%"=="1" (
+    echo.
+    echo   ERROR: Seleccione 1 o 2.
+    echo.
+    exit /b 1
+)
+
 
 REM ============================================================
 REM SOLICITAR ARCHIVO
@@ -179,3 +199,57 @@ if errorlevel 1 (
 )
 
 endlocal
+goto :eof
+
+
+:TRADUCIR_TAC
+set "TAC_DIR=%PROJECT%\salida\codigo_intermedio"
+
+echo.
+echo   Archivos .tac disponibles para traducir:
+echo.
+
+if not exist "%TAC_DIR%\*.tac" (
+    echo     No hay archivos .tac en salida\codigo_intermedio.
+    echo.
+    endlocal
+    exit /b 1
+)
+
+for %%f in ("%TAC_DIR%\*.tac") do echo     %%~nxf
+
+echo.
+set /p "ARCHIVO_TAC=  Nombre del archivo .tac: "
+
+if "%ARCHIVO_TAC%"=="" (
+    echo.
+    echo   ERROR: No se ingreso ningun archivo.
+    echo.
+    endlocal
+    exit /b 1
+)
+
+if /i not "%ARCHIVO_TAC:~-4%"==".tac" set "ARCHIVO_TAC=%ARCHIVO_TAC%.tac"
+
+if not exist "%TAC_DIR%\%ARCHIVO_TAC%" (
+    echo.
+    echo   ERROR: No se encontro %ARCHIVO_TAC% en salida\codigo_intermedio.
+    echo.
+    endlocal
+    exit /b 1
+)
+
+cls
+cd /d "%PROJECT%"
+java -cp "%BIN%;%LIB%\java-cup-11b.jar" Main --tac "%TAC_DIR%\%ARCHIVO_TAC%"
+
+if errorlevel 1 (
+    echo.
+    echo   La traduccion directa finalizo con errores.
+    echo.
+    endlocal
+    exit /b 1
+)
+
+endlocal
+exit /b 0
