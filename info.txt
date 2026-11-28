@@ -6,8 +6,8 @@ Nombre de los Estudiantes y número de carnet:
                                                 Heldyis Agüero Espinoza: 2023296812
                                                 Alice Arias Salazar:     2023104639
 
-d. Número de proyecto programado: Proyecto #2 - Análisis Semántico y Generación de Código Intermedio
+d. Número de proyecto programado: Proyecto #3 - Traducción de intermedio a ensamblador MIPS
 
-e. Fecha de entrega: 9 de noviembre de 2026
+e. Fecha de entrega: 5 de diciembre de 2026
 
 f. Estatus de la entrega: Superior
